@@ -41,9 +41,17 @@
   }
 
   *,*::before,*::after{ box-sizing:border-box; }
-  html{ -webkit-text-size-adjust:100%; }
+  html{
+    -webkit-text-size-adjust:100%;
+    /* Nothing on this page is meant to scroll sideways - the work rail does
+       its own scrolling internally. Set on html and body together, because a
+       rule on body alone is ignored once html is the viewport's scroller. */
+    overflow-x:hidden;
+  }
   body{
     margin:0;
+    overflow-x:hidden;
+    width:100%;
     font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
     color:var(--ink);
     background:var(--white);
@@ -645,7 +653,38 @@
   @media (max-width:560px){
     .nav__social{ display:none; }
     .hero__note{ display:none; }
-    .phone{ display:none; }
+
+    /* On a phone the handset stops being a decoration parked in the
+       corner and becomes the second half of the hero: it drops out of
+       absolute positioning and sits in the flow under the copy, at a
+       size where the feed is readable and its scroll can be watched,
+       the way you would hold Instagram. The markup order - copy, then
+       device - is why this needs no flex or order juggling; plain block
+       flow also keeps aspect-ratio honest, which it is not for a flex
+       item whose main axis is free to grow. */
+    .hero__inner{ padding-bottom:clamp(26px,4.5vh,40px); }
+
+    .phone{
+      position:static;
+      margin:0 auto clamp(30px,5vh,54px);
+      transform:rotate(-2deg);
+      opacity:1;
+      /* the width the screen chrome was drawn for, so the stories, the
+         wordmark and the captions keep their proportions */
+      --phone-w:min(72vw,264px);
+      --radius:34px;
+      /* a shorter body than the desktop device - it keeps the whole
+         handset on screen without pushing the fold too far down */
+      aspect-ratio:9/15.5;
+      box-shadow:
+        0 26px 46px -22px rgba(60,35,0,.55),
+        0 0 0 1.5px rgba(255,255,255,.16) inset,
+        0 2px 3px rgba(255,255,255,.22) inset;
+    }
+
+    /* the stories rail is scenery; dropping it hands its height to the
+       feed, so a whole post is in view as the track creeps past */
+    .ig__stories{ display:none; }
   }
   @media (prefers-reduced-motion:reduce){
     .ig__track{ animation:none; }
@@ -1060,6 +1099,9 @@
   /* ========================================================= work rail */
   .work{
     position:relative;
+    /* clips settled firework debris to the section - without this, crumbs
+       that drift past the edges widen the page and add a horizontal scrollbar */
+    overflow:hidden;
     padding:clamp(48px,8vh,96px) 0 clamp(40px,6vh,72px);
     background:var(--white);
   }
@@ -2259,6 +2301,23 @@
     </div>
   </nav>
 
+  <!-- copy ----------------------------------------------------------- -->
+  <div class="hero__inner">
+    <h1 class="hero__title">Somewhere between a floor plan and a first impression</h1>
+
+    <p class="hero__lede">
+      That gap is where we work. We design and build exhibition stands, pavilions and
+      conference stages - turning a plan on paper into the moment someone decides
+      you&rsquo;re worth their time.
+    </p>
+
+    <a class="hero__btn" href="#contact">Start a project
+      <span class="arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+  </div>
+
   <!-- phone ---------------------------------------------------------- -->
   <!-- Posts come from assets/work/web/ (800px JPEGs generated from the
        full-size PNGs in assets/work/). Each project is written once; the
@@ -2439,23 +2498,6 @@
 
       <span class="phone__home" aria-hidden="true"></span>
     </div>
-  </div>
-
-  <!-- copy ----------------------------------------------------------- -->
-  <div class="hero__inner">
-    <h1 class="hero__title">Somewhere between a floor plan and a first impression</h1>
-
-    <p class="hero__lede">
-      That gap is where we work. We design and build exhibition stands, pavilions and
-      conference stages - turning a plan on paper into the moment someone decides
-      you&rsquo;re worth their time.
-    </p>
-
-    <a class="hero__btn" href="#contact">Start a project
-      <span class="arrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-      </span>
-    </a>
   </div>
 
   <p class="hero__note" data-typed="from sketch&#10;to show floor">from sketch<br>to show floor</p>
@@ -3154,7 +3196,11 @@
     var cards = document.querySelectorAll('.wcard');
     if (!cards.length) return;
     if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    if (typeof Element.prototype.animate !== 'function') return;
+
+    // Touch devices get the same effect, just triggered by tap and by a card
+    // scrolling into view rather than by a hover that never happens.
+    var FINE = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
     var COLORS = ['#F9B016', '#FABF43', '#FDD378', '#1A57A7', '#FFF4DE'];
     var SHAPES = ['', ' fx--square', ' fx--streak'];
@@ -3171,10 +3217,15 @@
 
     function land(x, color, shape) {
       if (!floor || !work) return;
+      var wbox = work.getBoundingClientRect();
+      // Keep the crumb inside the section. The section clips its overflow, so
+      // anything outside would simply vanish rather than pile up on the floor.
+      var left = Math.min(Math.max(x - wbox.left, 0), wbox.width - 12);
+
       var crumb = document.createElement('span');
       crumb.className = 'crumb' + (shape ? ' crumb--' + shape : '');
       crumb.style.background = color;
-      crumb.style.left = (x - work.getBoundingClientRect().left) + 'px';
+      crumb.style.left = left + 'px';
       crumb.style.bottom = (Math.random() * 7) + 'px';     // a shallow pile
       crumb.style.transform = 'rotate(' + ((Math.random() * 50 - 25) | 0) + 'deg)';
       crumb.style.opacity = 0.55 + Math.random() * 0.45;
@@ -3189,7 +3240,7 @@
       var floorY = work.getBoundingClientRect().bottom - 8;
       var originY = box.top + 6;          // just inside the top edge
       var drop   = Math.max(120, floorY - originY);
-      var count  = 26;
+      var count  = FINE ? 26 : 16;        // lighter load on phones
 
       for (var i = 0; i < count; i++) {
         var shape = ['', 'square', 'streak'][(Math.random() * 3) | 0];
@@ -3227,14 +3278,40 @@
       }
     }
 
+    function fire(card, state, wait) {
+      if (state.cooling) return;        // one burst per gesture, not per twitch
+      state.cooling = true;
+      burst(card);
+      setTimeout(function () { state.cooling = false; }, wait);
+    }
+
+    // Fires a burst when a card scrolls into view - the only trigger that
+    // works on a phone without asking the visitor to tap anything.
+    var seeing = null;
+    if (!FINE && 'IntersectionObserver' in window) {
+      seeing = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) fire(e.target, e.target._fx, 1400);
+        });
+      }, { threshold: 0.55 });
+    }
+
     cards.forEach(function (card) {
-      var cooling = false;
-      card.addEventListener('mouseenter', function () {
-        if (cooling) return;            // one burst per hover, not per twitch
-        cooling = true;
-        burst(card);
-        setTimeout(function () { cooling = false; }, 700);
-      });
+      var state = { cooling: false };
+      card._fx = state;
+
+      if (FINE) {
+        card.addEventListener('mouseenter', function () { fire(card, state, 700); });
+        return;
+      }
+
+      // A tap anywhere on the card sets it off. Passive, so it never blocks
+      // the scroll or the links inside.
+      card.addEventListener('pointerdown', function () { fire(card, state, 700); }, { passive: true });
+      if (!window.PointerEvent) {
+        card.addEventListener('touchstart', function () { fire(card, state, 700); }, { passive: true });
+      }
+      if (seeing) seeing.observe(card);
     });
   }());
 
