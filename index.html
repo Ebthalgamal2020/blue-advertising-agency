@@ -1,0 +1,3720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Set before first paint: every rule that hides something for an
+     entrance is scoped to .js-motion, so with scripting off nothing
+     is ever left invisible. -->
+<script>document.documentElement.className += " js-motion";</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>blue advertising agency - v3</title>
+<meta name="description" content="blue is an advertising agency that designs and builds exhibition stands, pavilions and conference stages - from first sketch to show floor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ---- brand palette ---- */
+    --navy:   #14427F;
+    --amber:  #F9B016;
+    --black:  #000000;
+    --white:  #FFFFFF;
+
+    /* ---- shades of the two brand colours. Hue-locked to the primaries
+           (amber 40.7deg, navy 214.2deg): lightness moves, hue does not,
+           and saturation is held high rather than mixed toward white,
+           which would grey the family out.                            ---- */
+    --amber-050: #FFF4DE;   /* warm off-white       */
+    --amber-100: #FDD378;   /* hero wave, lightest  */
+    --amber-200: #FBC24B;   /* hero wave, mid       */
+    --amber-400: #FABF43;   /* amber, +9 lightness  */
+    --amber-600: #E09A0C;   /* hero wave, deepest   */
+    --navy-400:  #1A57A7;   /* navy,  +9 lightness  */
+    --navy-700:  #0E3161;   /* navy,  -7 lightness  */
+
+    /* ---- roles ---- */
+    --ground:  var(--amber);
+    --ink:     var(--black);
+    --surface: var(--white);
+    --accent:  var(--navy);
+    --nav-h:   96px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--white);
+  }
+
+  /* ---------------------------------------------------------------- hero */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    overflow:hidden;
+    background:var(--ground);
+    isolation:isolate;
+    /* curved bottom edge - overflow:hidden clips the waves to it */
+    border-radius:0 0 clamp(30px,4.5vw,80px) clamp(30px,4.5vw,80px);
+  }
+
+  /* layered wave landscape */
+  .hero__waves{
+    position:absolute;
+    inset:auto 0 0 0;
+    width:100%;
+    height:78%;
+    z-index:0;
+    display:block;
+    pointer-events:none;
+  }
+
+  /* Broad rounded hills that rise and fall in place - no sideways drift.
+     Each layer swells on its own period so the three never line up, and
+     the paths run down to y=780 (past the 620 viewBox) so lifting one
+     never opens a gap at the base.                                       */
+  .wave--1 path{ fill:var(--amber-100); }
+  .wave--2 path{ fill:var(--amber-200); }
+  .wave--3 path{ fill:var(--amber-600); }
+
+  .wave{ will-change:transform; }
+  .wave--1{ --swell:-70px; animation:swell   6s ease-in-out infinite; }
+  .wave--2{ --swell:52px;  animation:swell 8.5s ease-in-out infinite -3s; }
+  .wave--3{ --swell:-38px; animation:swell  11s ease-in-out infinite -7s; }
+
+  @keyframes swell{
+    0%,100%{ transform:translateY(0); }
+    50%    { transform:translateY(var(--swell)); }
+  }
+
+  /* ------------------------------------------------------------------ nav */
+  .nav{
+    position:relative;
+    z-index:5;
+    /* the bar spans the full width and sits above the handset, so let
+       pointer events fall through everywhere except the controls */
+    pointer-events:none;
+    height:var(--nav-h);
+    padding:0 clamp(16px,3vw,44px);
+    display:flex;
+    align-items:center;
+    gap:24px;
+  }
+
+  /* ---------------------------------------------------------------- logo
+     "blue advertising agency" lockup, V3 treatment: navy wordmark with a
+     white flag on the b, for use on the amber ground. Set as live text so
+     it stays sharp at any size; --flag recolors the accent per variant.  */
+  .brand{
+    display:inline-block;
+    text-decoration:none;
+    color:var(--navy);
+    flex:0 0 auto;
+    line-height:1;
+  }
+  .brand__word{
+    position:relative;
+    display:block;
+    font-weight:600;
+    font-size:clamp(30px,3.2vw,46px);
+    letter-spacing:-.028em;
+    line-height:.92;
+  }
+  /* the flag notch on the ascender of the b */
+  .brand__flag{
+    position:absolute;
+    left:.045em;
+    top:.055em;
+    width:.20em;
+    height:.30em;
+    background:var(--flag,var(--white));
+    clip-path:polygon(0 0,100% 0,0 100%);
+  }
+  .brand__tag{
+    display:block;
+    margin-top:.18em;
+    font-size:clamp(9px,.85vw,12px);
+    font-weight:500;
+    letter-spacing:.055em;
+    line-height:1;
+    text-align:center;
+  }
+
+  /* square brand mark - the standalone b */
+  .mark{
+    position:relative;
+    display:grid;
+    place-items:center;
+    border-radius:22%;
+    background:var(--mark-bg,var(--white));
+    color:var(--mark-fg,var(--navy));
+    font-weight:600;
+    line-height:1;
+    overflow:hidden;
+  }
+  .mark__b{ position:relative; display:block; }
+  .mark__b::before{
+    content:"";
+    position:absolute;
+    left:.05em;
+    top:.06em;
+    width:.20em;
+    height:.30em;
+    background:var(--flag,var(--amber));
+    clip-path:polygon(0 0,100% 0,0 100%);
+  }
+
+  .nav > *{ pointer-events:auto; }
+
+  .nav__menu{
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    list-style:none;
+    padding:0;
+  }
+  .nav__link{
+    display:inline-flex;
+    align-items:center;
+    height:44px;
+    padding:0 22px;
+    border-radius:999px;
+    background:var(--surface);
+    color:var(--ink);
+    font-size:15px;
+    font-weight:500;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:background .18s ease, color .18s ease, transform .18s ease;
+  }
+  .nav__link:hover{ background:var(--accent); color:var(--white); transform:translateY(-1px); }
+
+  .nav__cta{
+    display:inline-flex;
+    align-items:center;
+    gap:18px;
+    height:44px;
+    padding:0 6px 0 22px;
+    border-radius:999px;
+    background:var(--accent);
+    color:var(--white);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:filter .18s ease, transform .18s ease;
+  }
+  .nav__cta:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+
+  .arrow{
+    display:grid;
+    place-items:center;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:rgba(255,255,255,.20);
+    flex:0 0 auto;
+  }
+  .arrow svg{ width:15px; height:15px; }
+
+  .nav__social{
+    display:flex;
+    gap:10px;
+    flex:0 0 auto;
+  }
+  .social{
+    display:grid;
+    place-items:center;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--white);
+    transition:transform .18s ease, background .18s ease;
+  }
+  .social:hover{ transform:translateY(-2px); background:var(--accent); }
+  .social svg{ width:17px; height:17px; }
+
+  /* -------------------------------------------------------------- copy */
+  .hero__inner{
+    position:relative;
+    z-index:4;
+    /* this block overlaps the handset; only its actual content should
+       capture the pointer, otherwise the padding blocks the feed */
+    pointer-events:none;
+    /* right padding keeps the headline clear of the handset */
+    padding:clamp(28px,5vh,70px) clamp(300px,35vw,540px) 80px clamp(16px,3vw,44px);
+    max-width:1720px;
+  }
+
+  .hero__inner > *{ pointer-events:auto; }
+
+  .hero__title{
+    margin:0;
+    font-weight:800;
+    font-size:clamp(40px,5.6vw,84px);
+    line-height:.98;
+    letter-spacing:-.03em;
+    max-width:17ch;
+  }
+
+  .hero__lede{
+    margin:clamp(24px,4vh,42px) 0 0;
+    max-width:34ch;
+    font-size:clamp(15px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.55;
+  }
+
+  .hero__btn{
+    display:inline-flex;
+    align-items:center;
+    gap:26px;
+    margin-top:clamp(22px,3.4vh,34px);
+    height:52px;
+    padding:0 7px 0 26px;
+    border-radius:10px;
+    background:var(--accent);
+    color:var(--white);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    box-shadow:0 10px 24px -12px rgba(0,0,0,.55);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .hero__btn:hover{ transform:translateY(-2px); filter:brightness(1.12); }
+  .hero__btn .arrow{ background:rgba(255,255,255,.22); color:var(--white); width:38px; height:38px; border-radius:8px; }
+
+  /* ------------------------------------------------------- handwriting */
+  .hero__note{
+    position:absolute;
+    z-index:4;
+    /* sits just to the left of the handset - the two clamps mirror
+       --phone-w and --phone-right */
+    right:calc(clamp(250px,25vw,336px) + clamp(16px,5vw,104px) + 30px);
+    top:52%;
+    margin:0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(20px,1.7vw,28px);
+    line-height:1.15;
+    color:var(--accent);
+    transform:rotate(-4deg);
+    text-align:center;
+    pointer-events:none;
+    /* pre-line renders the typed newline; the fixed width keeps the box
+       from growing leftward off the right anchor as characters land */
+    white-space:pre-line;
+    width:9em;
+  }
+  /* blinking caret, only while typing */
+  .hero__note.is-typing::after{
+    content:"";
+    display:inline-block;
+    width:2px;
+    height:.95em;
+    margin-left:3px;
+    vertical-align:-.13em;
+    background:currentColor;
+    animation:caret .75s steps(1) infinite;
+  }
+  @keyframes caret{ 0%,49%{ opacity:1 } 50%,100%{ opacity:0 } }
+
+  /* ------------------------------------------------------------- phone
+     The work is shown as an Instagram feed on a handset. The device is
+     one absolutely positioned box; the feed inside it creeps upward on a
+     seamless loop - the post list is cloned once by script and the
+     keyframe travels exactly half the track, so the seam never shows.  */
+  .phone{
+    --phone-w:     clamp(250px,25vw,336px);
+    --phone-right: clamp(16px,5vw,104px);
+    --bezel:       11px;
+    --radius:      clamp(30px,3.2vw,46px);
+    position:absolute;
+    z-index:3;
+    right:var(--phone-right);
+    top:50%;
+    width:var(--phone-w);
+    aspect-ratio:9/18.6;
+    padding:var(--bezel);
+    border-radius:var(--radius);
+    background:
+      linear-gradient(155deg,#1A57A7 0%,#0E3161 22%,#071C36 62%,#0E3161 100%);
+    transform:translateY(-46%) rotate(-3deg);
+    box-shadow:
+      0 40px 70px -26px rgba(60,35,0,.55),
+      0 0 0 1.5px rgba(255,255,255,.16) inset,
+      0 2px 3px rgba(255,255,255,.22) inset;
+  }
+
+  /* the two side keys, drawn on the shell rather than added as markup */
+  .phone::before,
+  .phone::after{
+    content:"";
+    position:absolute;
+    left:-2.5px;
+    width:2.5px;
+    border-radius:2px 0 0 2px;
+    background:linear-gradient(#0E3161,#071C36);
+  }
+  .phone::before{ top:21%;  height:5%;  }
+  .phone::after { top:29.5%; height:9%; }
+
+  .phone__screen{
+    position:relative;
+    height:100%;
+    border-radius:calc(var(--radius) - var(--bezel));
+    overflow:hidden;
+    background:var(--white);
+    display:flex;
+    flex-direction:column;
+    font-size:11px;
+    line-height:1.35;
+    color:var(--black);
+  }
+
+  /* dynamic island */
+  .phone__island{
+    position:absolute;
+    z-index:4;
+    top:7px;
+    left:50%;
+    transform:translateX(-50%);
+    width:31%;
+    height:6.5%;
+    max-height:22px;
+    border-radius:999px;
+    background:#04101F;
+  }
+
+  /* ---------------------------------------------------------- ig chrome */
+  .ig__status{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:9px 15px 3px;
+    font-size:9.5px;
+    font-weight:600;
+    letter-spacing:.01em;
+  }
+  .ig__status svg{ width:13px; height:13px; display:block; }
+  .ig__signal{ display:flex; align-items:center; gap:4px; }
+
+  .ig__bar{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 13px 9px;
+    border-bottom:1px solid rgba(0,0,0,.08);
+  }
+  /* the app wordmark - Caveat is already loaded for the hero note and
+     reads as the handwritten logo an app of ours would use */
+  .ig__logo{
+    font-family:"Caveat",cursive;
+    font-size:21px;
+    font-weight:600;
+    line-height:1;
+    color:var(--navy);
+  }
+  .ig__bar-icons{ display:flex; gap:13px; }
+  .ig__bar-icons svg{ width:15px; height:15px; display:block; }
+
+  /* stories rail - static, it is scenery behind the moving feed */
+  .ig__stories{
+    flex:0 0 auto;
+    display:flex;
+    gap:11px;
+    padding:9px 12px 10px;
+    border-bottom:1px solid rgba(0,0,0,.08);
+    overflow:hidden;
+  }
+  .story{ flex:0 0 auto; width:42px; text-align:center; }
+  .story__ring{
+    width:42px; height:42px;
+    border-radius:50%;
+    padding:2px;
+    background:conic-gradient(from 210deg,var(--amber),var(--amber-600),var(--navy-400),var(--amber));
+    display:grid;
+    place-items:center;
+  }
+  .story__face{
+    width:100%; height:100%;
+    border-radius:50%;
+    border:2px solid var(--white);
+    background:var(--navy);
+    color:var(--white);
+    display:grid;
+    place-items:center;
+    font-size:15px;
+    font-weight:600;
+    overflow:hidden;
+  }
+  .story__face img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .story--me .story__ring{ background:rgba(0,0,0,.12); }
+  .story__name{
+    display:block;
+    margin-top:4px;
+    font-size:8px;
+    font-weight:500;
+    color:rgba(0,0,0,.62);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* ------------------------------------------------------------- feed */
+  .ig__feed{
+    position:relative;
+    flex:1 1 auto;
+    overflow:hidden;
+  }
+  .ig__track{
+    animation:igscroll 44s linear infinite;
+    will-change:transform;
+  }
+  /* the track is exactly two copies of the post list, so -50% lands the
+     second copy where the first began */
+  @keyframes igscroll{
+    from{ transform:translate3d(0,0,0); }
+    to  { transform:translate3d(0,-50%,0); }
+  }
+  .phone:hover .ig__track,
+  .phone:focus-within .ig__track{ animation-play-state:paused; }
+
+  .post{ margin:0 0 4px; }
+  .post__head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 11px;
+  }
+  .post__face{
+    width:24px; height:24px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:var(--navy);
+    color:var(--white);
+    display:grid;
+    place-items:center;
+    font-size:12px;
+    font-weight:600;
+    line-height:1;
+  }
+  .post__who{ min-width:0; }
+  .post__user{
+    display:block;
+    font-size:9.5px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .post__place{
+    display:block;
+    font-size:8.5px;
+    font-weight:400;
+    color:rgba(0,0,0,.55);
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .post__more{
+    margin-left:auto;
+    font-size:13px;
+    line-height:1;
+    color:rgba(0,0,0,.55);
+    letter-spacing:1px;
+  }
+
+  .post__media{
+    position:relative;
+    aspect-ratio:4/5;
+    overflow:hidden;
+    background:var(--amber-050);
+    cursor:pointer;
+  }
+  .post__media img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .5s ease;
+  }
+  .post__media:hover img{ transform:scale(1.05); }
+
+  .post__acts{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:8px 11px 4px;
+  }
+  .post__acts svg{ width:16px; height:16px; display:block; }
+  .post__save{ margin-left:auto; }
+  /* the like fills amber on hover, the one bit of the UI that reacts */
+  .post__like{ cursor:pointer; transition:color .2s ease, transform .2s ease; }
+  .post__like:hover{ color:var(--amber-600); transform:scale(1.12); }
+  .post__like:hover svg{ fill:currentColor; }
+
+  .post__likes{
+    margin:0;
+    padding:0 11px;
+    font-size:9px;
+    font-weight:600;
+  }
+  .post__cap{
+    margin:3px 0 0;
+    padding:0 11px;
+    font-size:9px;
+    font-weight:400;
+    line-height:1.45;
+    color:rgba(0,0,0,.86);
+  }
+  .post__cap b{ font-weight:600; }
+  .post__time{
+    margin:4px 0 0;
+    padding:0 11px 10px;
+    font-size:7.5px;
+    font-weight:400;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:rgba(0,0,0,.42);
+  }
+
+  /* ------------------------------------------------------------- tabs */
+  .ig__tabs{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:8px 12px 15px;
+    border-top:1px solid rgba(0,0,0,.08);
+    background:var(--white);
+  }
+  .ig__tabs svg{ width:16px; height:16px; display:block; color:rgba(0,0,0,.75); }
+  .ig__tabs .is-active{ color:var(--navy); }
+  .ig__tabs .is-active svg{ fill:currentColor; }
+  /* home indicator */
+  .phone__home{
+    position:absolute;
+    z-index:4;
+    left:50%;
+    bottom:5px;
+    transform:translateX(-50%);
+    width:32%;
+    height:3px;
+    border-radius:999px;
+    background:rgba(0,0,0,.35);
+  }
+
+  /* ------------------------------------------------ floating badge mark */
+  .hero__badge{
+    position:absolute;
+    z-index:5;
+    right:clamp(20px,3vw,58px);
+    bottom:clamp(20px,4vh,58px);
+    width:64px; height:64px;
+    font-size:44px;
+    --mark-bg:var(--navy);
+    --mark-fg:var(--white);
+    --flag:var(--amber);
+    box-shadow:0 12px 26px -14px rgba(0,0,0,.6);
+  }
+
+  /* ------------------------------------------------------------ mobile */
+  @media (max-width:1250px){
+    /* five items in the bar now - the pills tighten before they wrap */
+    .nav__menu{ gap:6px; }
+    .nav__link{ padding:0 15px; font-size:14px; }
+    .nav__cta{ padding:0 6px 0 18px; gap:12px; font-size:14px; }
+  }
+  @media (max-width:1100px){
+    .phone{ --phone-w:clamp(200px,23vw,250px); --phone-right:18px; }
+  }
+  @media (max-width:900px){
+    :root{ --nav-h:76px; }
+    .nav__menu{ display:none; }
+    .hero__title{ max-width:none; }
+    .hero__inner{ padding-right:clamp(16px,3vw,44px); }
+    .hero__note{ top:auto; bottom:20%; right:20px; }
+    /* the copy stops well short of the handset at this width, so the
+       device only steps back rather than fading out */
+    .phone{ opacity:.72; --phone-w:190px; --phone-right:10px; }
+    .hero__badge{ display:none; }
+  }
+  @media (max-width:560px){
+    .nav__social{ display:none; }
+    .hero__note{ display:none; }
+    .phone{ display:none; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ig__track{ animation:none; }
+    .wave, .wave path{ animation:none; }
+  }
+
+  /* ====================================================== who we are */
+  /* White ground, so it reads as a breath after the amber hero. The
+     copy sits left, a single amber panel holds the glyph and the
+     numbers on the right - the same two-colour split the cards use. */
+  .about{
+    position:relative;
+    padding:clamp(54px,9vh,110px) clamp(16px,3vw,44px) clamp(34px,5vh,70px);
+    background:var(--white);
+  }
+  .about__inner{
+    display:grid;
+    grid-template-columns:1.12fr .88fr;
+    gap:clamp(28px,4vw,76px);
+    align-items:center;
+    max-width:1500px;
+    margin:0 auto;
+  }
+  .about__note{
+    margin:0 0 clamp(8px,1.4vh,14px);
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-3deg);
+    transform-origin:left center;
+  }
+  .about__title{
+    margin:0;
+    max-width:15ch;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .about__title em{ font-style:normal; color:var(--amber-600); }
+  .about__lede{
+    margin:clamp(18px,2.6vh,28px) 0 0;
+    max-width:46ch;
+    font-size:clamp(15px,1.15vw,18px);
+    font-weight:500;
+    line-height:1.55;
+    color:var(--navy-700);
+  }
+  .about__text{
+    margin:clamp(12px,1.8vh,18px) 0 0;
+    max-width:50ch;
+    font-size:clamp(13.5px,1vw,15.5px);
+    font-weight:400;
+    line-height:1.65;
+    color:var(--navy-700);
+    opacity:.78;
+  }
+  .about__cta{
+    display:inline-flex;
+    align-items:center;
+    gap:22px;
+    margin-top:clamp(22px,3.4vh,34px);
+    height:52px;
+    padding:0 7px 0 26px;
+    border-radius:10px;
+    background:var(--navy);
+    color:var(--white);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.6);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .about__cta:hover{ transform:translateY(-2px); filter:brightness(1.12); }
+  .about__cta .arrow{ background:rgba(255,255,255,.22); width:38px; height:38px; border-radius:8px; }
+
+  .about__aside{
+    position:relative;
+    padding:clamp(24px,2.6vw,40px);
+    border-radius:26px;
+    background:var(--amber-050);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  /* the same soft blob the process panel uses, scaled down */
+  .about__aside::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:-38%;
+    right:-26%;
+    width:78%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:rgba(249,176,22,.22);
+  }
+  .about__glyph{
+    display:grid;
+    place-items:center;
+    width:clamp(78px,7vw,104px);
+    height:clamp(78px,7vw,104px);
+    border-radius:24px;
+    background:var(--white);
+    color:var(--navy);
+    box-shadow:0 18px 34px -22px rgba(60,35,0,.55);
+  }
+  .about__glyph svg{ width:52%; height:auto; }
+  .about__aside h3{
+    margin:clamp(18px,2.6vh,26px) 0 0;
+    font-size:clamp(19px,1.6vw,25px);
+    font-weight:800;
+    line-height:1.15;
+    letter-spacing:-.02em;
+    color:var(--navy);
+  }
+  .about__aside p{
+    margin:10px 0 0;
+    font-size:clamp(13.5px,1vw,15px);
+    line-height:1.6;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+  .about__stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(10px,1.2vw,18px);
+    margin:clamp(22px,3vh,32px) 0 0;
+    padding:clamp(18px,2.4vh,24px) 0 0;
+    border-top:1px solid rgba(20,66,127,.16);
+    list-style:none;
+  }
+  .about__stats b{
+    display:block;
+    font-size:clamp(24px,2.4vw,36px);
+    font-weight:800;
+    line-height:1;
+    letter-spacing:-.03em;
+    color:var(--navy);
+  }
+  .about__stats span{
+    display:block;
+    margin-top:6px;
+    font-size:clamp(11px,.8vw,12.5px);
+    font-weight:500;
+    line-height:1.35;
+    color:var(--navy-700);
+    opacity:.72;
+  }
+
+  @media (max-width:900px){
+    .about__inner{ grid-template-columns:1fr; }
+    .about__title{ max-width:none; }
+  }
+
+  /* ================================================ mission & vision */
+  /* Warm panel on the same radius as the process block, so the page
+     alternates white / amber-050 all the way down. Two cards only -
+     one for each half of the promise. */
+  .mv{
+    position:relative;
+    margin:clamp(10px,1.6vh,20px) 0;
+    padding:clamp(44px,7vh,92px) clamp(16px,3vw,44px) clamp(50px,8vh,102px);
+    background:var(--amber-050);
+    border-radius:clamp(30px,4.5vw,80px);
+    overflow:hidden;
+  }
+  /* the same soft blobs the process panel carries, so the two warm
+     panels read as one pair rather than two different treatments */
+  .mv::before,
+  .mv::after{
+    content:"";
+    position:absolute;
+    z-index:0;
+    border-radius:50%;
+    background:rgba(249,176,22,.18);
+  }
+  .mv::before{ width:46vw; height:46vw; top:-20vw; right:-14vw; }
+  .mv::after { width:38vw; height:38vw; bottom:-20vw; left:-12vw; }
+
+  .mv__head{
+    position:relative;
+    z-index:1;
+    max-width:1500px;
+    margin:0 auto clamp(30px,5vh,58px);
+    text-align:center;
+  }
+  .mv__note{
+    margin:0 0 10px;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-2deg);
+  }
+  .mv__title{
+    margin:0;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .mv__sub{
+    margin:16px auto 0;
+    max-width:52ch;
+    font-size:clamp(14px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.5;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+
+  .mv__grid{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:clamp(18px,2vw,32px);
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .mv__card{
+    display:flex;
+    flex-direction:column;
+    padding:clamp(24px,2.6vw,42px);
+    border-radius:22px;
+    background:var(--card-bg);
+    color:var(--card-fg);
+    box-shadow:0 26px 44px -26px rgba(60,35,0,.5);
+    transition:transform .35s cubic-bezier(.22,.68,.24,1), box-shadow .35s ease;
+  }
+  .mv__card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 40px 60px -26px rgba(60,35,0,.58);
+  }
+  .mv__card--mission{ --card-bg:var(--navy);  --card-fg:var(--amber-050); --card-accent:var(--amber); }
+  .mv__card--vision { --card-bg:var(--amber); --card-fg:var(--navy-700);  --card-accent:var(--navy); }
+
+  .mv__icon{
+    display:grid;
+    place-items:center;
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    background:rgba(255,255,255,.16);
+    color:var(--card-accent);
+  }
+  .mv__card--vision .mv__icon{ background:rgba(14,49,97,.12); }
+  .mv__icon svg{ width:38px; height:38px; }
+  .mv__label{
+    margin:clamp(16px,2.2vh,24px) 0 0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(20px,1.5vw,26px);
+    line-height:1;
+    color:var(--card-accent);
+  }
+  .mv__ttl{
+    margin:8px 0 0;
+    font-size:clamp(23px,2vw,32px);
+    font-weight:800;
+    line-height:1.08;
+    letter-spacing:-.025em;
+  }
+  .mv__text{
+    margin:12px 0 0;
+    font-size:clamp(13.5px,1vw,15.5px);
+    font-weight:400;
+    line-height:1.6;
+    opacity:.92;
+  }
+  .mv__list{
+    margin:clamp(18px,2.4vh,26px) 0 0;
+    padding:clamp(16px,2vh,22px) 0 0;
+    border-top:1px solid rgba(255,255,255,.20);
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+  }
+  .mv__card--vision .mv__list{ border-top-color:rgba(14,49,97,.20); }
+  .mv__list li{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:clamp(13px,.95vw,14.5px);
+    font-weight:500;
+    line-height:1.45;
+    opacity:.94;
+  }
+  .mv__list svg{
+    flex:0 0 auto;
+    width:17px;
+    height:17px;
+    margin-top:1px;
+    color:var(--card-accent);
+  }
+
+  @media (max-width:760px){
+    .mv__grid{ grid-template-columns:1fr; }
+  }
+
+  /* ======================================================== services */
+  /* A plain grid rather than the fanned deck - the process cards
+     already own that trick, and six tiles need to stay readable.
+     Colourways are the wcard set, so the two sections rhyme. */
+  .svc{
+    position:relative;
+    padding:clamp(54px,9vh,108px) clamp(16px,3vw,44px) clamp(44px,7vh,88px);
+    background:var(--white);
+  }
+  .svc__head{
+    position:relative;
+    max-width:1500px;
+    margin:0 auto clamp(30px,5vh,54px);
+    text-align:center;
+  }
+  .svc__note{
+    margin:0 0 10px;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-2deg);
+  }
+  .svc__title{
+    margin:0;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .svc__sub{
+    margin:16px auto 0;
+    max-width:50ch;
+    font-size:clamp(14px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.5;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+
+  .svc__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(14px,1.5vw,26px);
+    max-width:1500px;
+    margin:0 auto;
+  }
+  .svc__card{
+    display:flex;
+    flex-direction:column;
+    min-height:clamp(230px,22vw,300px);
+    padding:clamp(22px,2.2vw,34px);
+    border-radius:22px;
+    background:var(--c-bg);
+    color:var(--c-fg);
+    box-shadow:0 22px 40px -26px rgba(60,35,0,.5);
+    transition:transform .35s cubic-bezier(.22,.68,.24,1), box-shadow .35s ease;
+  }
+  .svc__card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 38px 56px -24px rgba(60,35,0,.58);
+  }
+  .svc__ico{
+    display:grid;
+    place-items:center;
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    background:var(--c-pill);
+    color:var(--c-fg);
+  }
+  .svc__ico svg{ width:34px; height:34px; }
+  .svc__ttl{
+    margin:clamp(18px,2.4vh,26px) 0 0;
+    font-size:clamp(19px,1.5vw,24px);
+    font-weight:800;
+    line-height:1.1;
+    letter-spacing:-.02em;
+  }
+  .svc__text{
+    margin:10px 0 0;
+    font-size:clamp(13px,.95vw,14.5px);
+    font-weight:400;
+    line-height:1.55;
+    opacity:.9;
+  }
+  .svc__num{
+    margin-top:auto;
+    padding-top:clamp(16px,2.2vh,24px);
+    font-family:"Caveat",cursive;
+    font-size:clamp(18px,1.4vw,24px);
+    line-height:1;
+    opacity:.7;
+  }
+
+  @media (max-width:1000px){
+    .svc__grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:620px){
+    .svc__grid{ grid-template-columns:1fr; }
+    .svc__card{ min-height:0; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .mv__card, .svc__card{ transition:none; }
+  }
+
+  /* ========================================================= work rail */
+  .work{
+    position:relative;
+    padding:clamp(48px,8vh,96px) 0 clamp(40px,6vh,72px);
+    background:var(--white);
+  }
+  .work__head{
+    position:relative;
+    max-width:1500px;
+    margin:0 auto;
+    padding:0 clamp(16px,3vw,44px);
+    text-align:center;
+  }
+  .work__note{
+    position:absolute;
+    top:-6px;
+    left:clamp(16px,3vw,44px);
+    margin:0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-5deg);
+    text-align:left;
+    max-width:12ch;
+  }
+  .work__title{
+    margin:0;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .work__sub{
+    margin:16px auto 0;
+    max-width:44ch;
+    font-size:clamp(14px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.5;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+
+  .work__nav{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    max-width:1500px;
+    margin:clamp(26px,4vh,44px) auto clamp(18px,2.6vh,28px);
+    padding:0 clamp(16px,3vw,44px);
+  }
+  .work__btn{
+    width:52px; height:52px;
+    display:grid;
+    place-items:center;
+    border:0;
+    border-radius:50%;
+    background:var(--navy);
+    color:var(--amber-050);
+    cursor:pointer;
+    transition:background .2s ease, transform .2s ease, opacity .2s ease;
+  }
+  .work__btn:hover:not(:disabled){ transform:translateY(-2px); }
+  .work__btn:disabled{
+    background:var(--amber-050);
+    color:var(--navy);
+    opacity:.55;
+    cursor:default;
+  }
+  .work__btn svg{ width:20px; height:20px; }
+
+  /* the rail itself */
+  .wrail{
+    display:flex;
+    gap:clamp(16px,1.6vw,26px);
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    padding:6px clamp(16px,3vw,44px) 28px;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  .wrail::-webkit-scrollbar{ display:none; }
+
+  .wcard{
+    flex:0 0 clamp(230px,19vw,285px);
+    scroll-snap-align:start;
+    display:flex;
+    flex-direction:column;
+    padding:12px 12px 20px;
+    border-radius:20px;
+    background:var(--c-bg);
+    color:var(--c-fg);
+    box-shadow:0 20px 38px -22px rgba(14,49,97,.55);
+    transition:transform .28s ease, box-shadow .28s ease;
+  }
+  .wcard:hover{
+    transform:translateY(-8px);
+    box-shadow:0 30px 50px -22px rgba(14,49,97,.6);
+  }
+  .wcard__media{
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:3/4;
+    background:rgba(0,0,0,.12);
+  }
+  .wcard__media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .wcard__tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    list-style:none;
+    margin:16px 0 12px;
+    padding:0 2px;
+  }
+  .wcard__tags li{
+    padding:4px 10px 5px;
+    border-radius:999px;
+    background:var(--c-pill);
+    color:var(--c-pill-fg);
+    font-size:11px;
+    font-weight:600;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+  .wcard__title{
+    margin:0 0 8px;
+    padding:0 2px;
+    font-size:clamp(19px,1.5vw,24px);
+    font-weight:800;
+    line-height:1.1;
+    letter-spacing:-.02em;
+  }
+  .wcard__text{
+    margin:0;
+    padding:0 2px;
+    font-size:13px;
+    font-weight:400;
+    line-height:1.5;
+    opacity:.9;
+  }
+
+  /* firework particles - drawn in a fixed layer over the page so they are
+     not clipped by the rail's horizontal overflow */
+  .fx-layer{
+    position:fixed;
+    inset:0;
+    z-index:60;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .fx{
+    position:absolute;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    will-change:transform,opacity;
+  }
+  .fx--square{ border-radius:2px; }
+  .fx--streak{ width:4px; height:13px; border-radius:3px; }
+
+  /* where the debris settles - a strip along the base of the section */
+  .work__floor{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:0;
+    pointer-events:none;
+  }
+  .crumb{
+    position:absolute;
+    bottom:0;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    transform-origin:50% 100%;
+    animation:settle .45s cubic-bezier(.2,1.5,.4,1) both;
+  }
+  .crumb--square{ border-radius:2px; }
+  .crumb--streak{ width:11px; height:4px; border-radius:3px; }
+
+  @keyframes settle{
+    0%  { transform:translateY(-9px) scaleY(1);    opacity:.9; }
+    55% { transform:translateY(0)    scaleY(.62);  opacity:1; }
+    100%{ transform:translateY(0)    scaleY(1);    opacity:1; }
+  }
+
+  /* card colourways - shades of the two brand colours, alternating */
+  .wcard--navy  { --c-bg:var(--navy);      --c-fg:var(--amber-050); --c-pill:rgba(255,255,255,.18); --c-pill-fg:var(--amber-050); }
+  .wcard--amber { --c-bg:var(--amber);     --c-fg:var(--navy-700);  --c-pill:rgba(14,49,97,.15);    --c-pill-fg:var(--navy-700); }
+  .wcard--blue  { --c-bg:var(--navy-400);  --c-fg:var(--amber-050); --c-pill:rgba(255,255,255,.20); --c-pill-fg:var(--amber-050); }
+  .wcard--gold  { --c-bg:var(--amber-400); --c-fg:var(--navy-700);  --c-pill:rgba(14,49,97,.15);    --c-pill-fg:var(--navy-700); }
+  .wcard--deep  { --c-bg:var(--navy-700);  --c-fg:var(--amber-050); --c-pill:rgba(255,255,255,.16); --c-pill-fg:var(--amber-050); }
+
+  @media (max-width:700px){
+    .work__note{ position:static; margin:0 0 14px; transform:rotate(-3deg); max-width:none; text-align:center; }
+    .work__nav{ justify-content:center; }
+    .wcard{ flex-basis:74vw; }
+  }
+
+  /* ====================================================== how it works */
+  .how{
+    position:relative;
+    margin-top:14px;
+    padding:clamp(40px,6vh,78px) clamp(16px,3vw,44px) clamp(60px,9vh,110px);
+    background:var(--amber-050);
+    border-radius:clamp(30px,4.5vw,80px);
+    overflow:hidden;
+  }
+  /* soft blobs behind the cards */
+  .how::before,
+  .how::after{
+    content:"";
+    position:absolute;
+    z-index:0;
+    border-radius:50%;
+    background:rgba(249,176,22,.16);
+  }
+  .how::before{ width:52vw; height:52vw; top:-16vw; left:-12vw; }
+  .how::after { width:44vw; height:44vw; bottom:-18vw; right:-10vw; }
+
+  .how__head{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:flex-start;
+    gap:clamp(16px,3vw,48px);
+    flex-wrap:wrap;
+    max-width:1500px;
+    margin:0 auto clamp(34px,6vh,64px);
+  }
+  .how__title{
+    margin:0;
+    font-size:clamp(34px,5vw,72px);
+    font-weight:800;
+    line-height:1.05;
+    letter-spacing:-.035em;
+  }
+  .how__title span{ color:var(--navy); }
+  .how__note{
+    margin:clamp(6px,1.4vh,16px) 0 0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-3deg);
+    max-width:14ch;
+  }
+  .how__cta{
+    margin-left:auto;
+    display:inline-flex;
+    align-items:center;
+    gap:22px;
+    height:52px;
+    padding:0 7px 0 26px;
+    border-radius:10px;
+    background:var(--navy);
+    color:var(--white);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.6);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .how__cta:hover{ transform:translateY(-2px); filter:brightness(1.12); }
+  .how__cta .arrow{ background:rgba(255,255,255,.22); width:38px; height:38px; border-radius:8px; }
+
+  /* ---- the fanned card deck ---- */
+  .steps{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    max-width:1500px;
+    margin:0 auto;
+    padding-top:26px;
+  }
+  .step{
+    --rot:0deg;
+    --lift:0px;
+    position:relative;
+    flex:0 0 auto;
+    width:clamp(210px,20vw,310px);
+    min-height:clamp(340px,40vw,470px);
+    margin-left:clamp(-70px,-4vw,-30px);
+    padding:clamp(20px,1.7vw,28px);
+    border-radius:22px;
+    background:var(--card-bg);
+    color:var(--card-fg);
+    box-shadow:0 26px 44px -22px rgba(60,35,0,.55);
+    --sx:0px;  /* scatter offsets, re-rolled by JS on every hover */
+    --sy:0px;
+    --srot:0deg;
+    --sc:1;
+    transform:translate(var(--sx),calc(var(--lift) + var(--sy)))
+              rotate(calc(var(--rot) + var(--srot)))
+              scale(var(--sc));
+    transition:transform .45s cubic-bezier(.22,.68,.24,1), box-shadow .35s ease;
+    will-change:transform;
+    display:flex;
+    flex-direction:column;
+  }
+  .step:first-child{ margin-left:0; }
+  .step:hover,
+  .step:focus-within,
+  .step.is-hot{
+    transform:translateY(calc(var(--lift) - 22px)) rotate(0deg) scale(1.04);
+    box-shadow:0 40px 62px -20px rgba(60,35,0,.62);
+    z-index:6;
+  }
+  /* the cards that are not being hovered fade back a touch while they scatter */
+  .steps.is-scattered .step:not(.is-hot){ box-shadow:0 22px 38px -24px rgba(60,35,0,.45); }
+
+  @media (prefers-reduced-motion:reduce){
+    .step{ transition:none; }
+  }
+
+  /* the fan: each card tips a little further and sits a little lower */
+  .step--1{ --rot:-8deg; --lift:34px; z-index:1; }
+  .step--2{ --rot:-3deg; --lift:8px;  z-index:2; }
+  .step--3{ --rot:2deg;  --lift:0px;  z-index:3; }
+  .step--4{ --rot:7deg;  --lift:20px; z-index:4; }
+
+  /* alternating shades of the two brand colours, warm / cool / warm / cool */
+  .step--1{ --card-bg:var(--amber-400); --card-fg:var(--navy-700);  --card-accent:var(--navy); }
+  .step--2{ --card-bg:var(--navy);      --card-fg:var(--amber-050); --card-accent:var(--amber); }
+  .step--3{ --card-bg:var(--amber);     --card-fg:var(--navy-700);  --card-accent:var(--navy); }
+  .step--4{ --card-bg:var(--navy-400);  --card-fg:var(--amber-050); --card-accent:var(--amber-400); }
+
+  .step__label{
+    font-family:"Caveat",cursive;
+    font-size:clamp(20px,1.5vw,26px);
+    line-height:1;
+    text-align:center;
+    color:var(--card-accent);
+  }
+  .step__art{
+    display:grid;
+    place-items:center;
+    flex:1 1 auto;
+    min-height:110px;
+    padding:clamp(14px,2vh,26px) 0;
+  }
+  .step__art svg{
+    width:clamp(86px,7vw,116px);
+    height:auto;
+    color:var(--card-fg);
+  }
+  .step__title{
+    margin:0 0 10px;
+    font-size:clamp(21px,1.7vw,27px);
+    font-weight:800;
+    line-height:1.05;
+    letter-spacing:-.02em;
+  }
+  .step__text{
+    margin:0;
+    font-size:clamp(13px,.95vw,14.5px);
+    font-weight:400;
+    line-height:1.5;
+    opacity:.92;
+  }
+
+  @media (max-width:1100px){
+    .steps{ flex-wrap:wrap; gap:22px; justify-content:center; }
+    .step{
+      --rot:0deg;
+      --lift:0px;
+      --sx:0px;
+      --sy:0px;
+      --srot:0deg;
+      margin-left:0;
+      width:clamp(240px,42vw,320px);
+      min-height:0;
+    }
+    .how__cta{ margin-left:0; }
+  }
+  @media (max-width:560px){
+    .step{ width:100%; }
+  }
+
+  /* ========================================================== footer */
+  /* The mirror of the hero: same wave landscape and the same two brand
+     colours, with the roles swapped - navy ground, amber accents. The
+     top corners are curved to the same radius the hero's bottom uses,
+     so the page opens and closes on the same shape.                   */
+  .foot{
+    position:relative;
+    margin-top:clamp(-70px,-6vw,-40px);   /* tuck under the .how radius */
+    padding:clamp(150px,15vw,230px) clamp(16px,3vw,44px) clamp(26px,3vh,38px);
+    background:var(--navy-700);
+    color:var(--amber-050);
+    border-radius:clamp(30px,4.5vw,80px) clamp(30px,4.5vw,80px) 0 0;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  /* the wave landscape, flipped so the hills hang from the top edge */
+  .foot__waves{
+    position:absolute;
+    inset:0 0 auto 0;
+    width:100%;
+    height:clamp(150px,17vw,260px);
+    z-index:0;
+    display:block;
+    transform:scaleY(-1);
+    pointer-events:none;
+  }
+  /* Navy shades, assigned back-to-front so that the flip still reads
+     lightest where the wave field starts - here the top edge - and
+     darkens down into the ground, exactly as the hero does. */
+  .foot .wave--1 path{ fill:var(--navy-700); }
+  .foot .wave--2 path{ fill:var(--navy); }
+  .foot .wave--3 path{ fill:var(--navy-400); }
+
+  .foot__inner{
+    position:relative;
+    z-index:1;
+    max-width:1500px;
+    margin:0 auto;
+  }
+
+  /* ---- the call to action across the top ---- */
+  .foot__call{
+    display:flex;
+    align-items:flex-end;
+    gap:clamp(20px,3vw,48px);
+    flex-wrap:wrap;
+    padding-bottom:clamp(34px,5vh,56px);
+    border-bottom:1px solid rgba(253,211,120,.22);
+  }
+  .foot__title{
+    margin:0;
+    max-width:16ch;
+    font-size:clamp(30px,4.4vw,64px);
+    font-weight:800;
+    line-height:1.03;
+    letter-spacing:-.035em;
+    color:var(--white);
+  }
+  .foot__title em{ font-style:normal; color:var(--amber); }
+  .foot__note{
+    margin:clamp(10px,1.6vh,18px) 0 0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--amber-100);
+    transform:rotate(-3deg);
+    max-width:16ch;
+  }
+  /* the hero button, inverted - amber on navy rather than navy on amber */
+  .foot__cta{
+    margin-left:auto;
+    display:inline-flex;
+    align-items:center;
+    gap:26px;
+    height:52px;
+    padding:0 7px 0 26px;
+    border-radius:10px;
+    background:var(--amber);
+    color:var(--navy-700);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+    box-shadow:0 12px 26px -14px rgba(0,0,0,.7);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .foot__cta:hover{ transform:translateY(-2px); filter:brightness(1.08); }
+  .foot__cta .arrow{
+    width:38px; height:38px;
+    border-radius:8px;
+    background:rgba(14,49,97,.16);
+    color:var(--navy-700);
+  }
+
+  /* ---- the columns ---- */
+  .foot__cols{
+    display:grid;
+    grid-template-columns:1.4fr repeat(3,1fr);
+    gap:clamp(26px,3vw,48px);
+    padding:clamp(36px,5vh,58px) 0 clamp(30px,4vh,48px);
+  }
+  .foot__brand{ max-width:34ch; }
+  /* the wordmark carries an amber flag on this ground, not a white one */
+  .foot__brand .brand{ color:var(--white); --flag:var(--amber); }
+  .foot__blurb{
+    margin:clamp(14px,2vh,22px) 0 0;
+    font-size:14px;
+    font-weight:400;
+    line-height:1.6;
+    color:var(--amber-050);
+    opacity:.78;
+  }
+  .foot__social{
+    display:flex;
+    gap:10px;
+    margin-top:clamp(18px,2.6vh,26px);
+  }
+  /* .social inverted: amber chip, navy glyph */
+  .foot__social .social{
+    width:38px; height:38px;
+    background:rgba(253,211,120,.14);
+    color:var(--amber-050);
+  }
+  .foot__social .social:hover{ background:var(--amber); color:var(--navy-700); }
+
+  .foot__ttl{
+    margin:0 0 16px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--amber);
+  }
+  .foot__list{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+  }
+  .foot__list a,
+  .foot__list span{
+    font-size:14.5px;
+    font-weight:500;
+    line-height:1.35;
+    color:var(--amber-050);
+    text-decoration:none;
+    opacity:.82;
+    transition:color .18s ease, opacity .18s ease;
+  }
+  .foot__list a:hover{ color:var(--amber-400); opacity:1; }
+  .foot__list--plain span{ font-weight:400; opacity:.7; }
+
+  /* ---- the bottom rule ---- */
+  .foot__base{
+    display:flex;
+    align-items:center;
+    gap:14px 26px;
+    flex-wrap:wrap;
+    padding-top:clamp(18px,2.4vh,26px);
+    border-top:1px solid rgba(253,211,120,.18);
+    font-size:12.5px;
+    font-weight:400;
+    color:var(--amber-050);
+    opacity:.62;
+  }
+  .foot__base a{ color:inherit; text-decoration:none; }
+  .foot__base a:hover{ color:var(--amber-400); opacity:1; }
+  .foot__base p{ margin:0; }
+  .foot__legal{ margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; }
+
+  @media (max-width:900px){
+    .foot__cols{ grid-template-columns:1fr 1fr; }
+    .foot__brand{ grid-column:1 / -1; max-width:none; }
+    .foot__cta{ margin-left:0; }
+  }
+  @media (max-width:560px){
+    .foot__cols{ grid-template-columns:1fr; }
+    .foot__legal{ margin-left:0; }
+  }
+  /* ======================================================== get in touch */
+  /* The last white breath before the navy footer, and the one place on
+     the page that asks for something back. Left column is the direct
+     routes - phone, mail, door - right column is the form, on the same
+     amber panel the about section opens with, so the page bookends. */
+  .ct{
+    position:relative;
+    padding:clamp(56px,9vh,112px) clamp(16px,3vw,44px) clamp(74px,11vh,140px);
+    background:var(--white);
+  }
+  .ct__inner{
+    display:grid;
+    grid-template-columns:.92fr 1.08fr;
+    gap:clamp(28px,4vw,76px);
+    align-items:start;
+    max-width:1500px;
+    margin:0 auto;
+  }
+  .ct__note{
+    margin:0 0 clamp(8px,1.4vh,14px);
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-3deg);
+    transform-origin:left center;
+  }
+  .ct__title{
+    margin:0;
+    max-width:13ch;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .ct__lede{
+    margin:clamp(16px,2.4vh,26px) 0 0;
+    max-width:40ch;
+    font-size:clamp(14px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.55;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+
+  /* ---- the direct routes ---- */
+  .ct__meta{
+    margin:clamp(26px,4vh,42px) 0 0;
+    padding:0;
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(14px,2vh,20px);
+  }
+  .ct__row{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+  }
+  .ct__ico{
+    flex:0 0 auto;
+    display:grid;
+    place-items:center;
+    width:44px; height:44px;
+    border-radius:14px;
+    background:var(--amber-050);
+    color:var(--navy);
+  }
+  .ct__ico svg{ width:21px; height:21px; }
+  .ct__row b{
+    display:block;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--navy-700);
+    opacity:.6;
+  }
+  .ct__row a,
+  .ct__row span.ct__val{
+    display:block;
+    margin-top:3px;
+    font-size:clamp(14.5px,1.1vw,17px);
+    font-weight:600;
+    line-height:1.4;
+    color:var(--navy);
+    text-decoration:none;
+  }
+  .ct__row a:hover{ color:var(--amber-600); }
+
+  /* ---- the form panel ---- */
+  .ct__panel{
+    position:relative;
+    padding:clamp(24px,2.8vw,44px);
+    border-radius:26px;
+    background:var(--amber-050);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .ct__panel::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    bottom:-34%;
+    left:-22%;
+    width:70%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:rgba(249,176,22,.22);
+  }
+  .ct__grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(12px,1.4vw,18px);
+  }
+  /* the fields are <p> elements, so their default margin has to go or
+     the grid gap doubles up on every row */
+  .ct__field{ display:flex; flex-direction:column; gap:7px; margin:0; }
+  .ct__field--wide{ grid-column:1 / -1; }
+  .ct__field label{
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--navy-700);
+    opacity:.72;
+  }
+  .ct__field label i{ font-style:normal; color:var(--amber-600); }
+
+  .ct__field input,
+  .ct__field textarea{
+    width:100%;
+    height:50px;
+    padding:0 16px;
+    border:1.5px solid rgba(20,66,127,.18);
+    border-radius:12px;
+    background:var(--white);
+    font-family:inherit;
+    font-size:15px;
+    font-weight:500;
+    color:var(--navy-700);
+    transition:border-color .18s ease, box-shadow .18s ease;
+  }
+  .ct__field textarea{
+    height:auto;
+    min-height:120px;
+    padding:14px 16px;
+    line-height:1.5;
+    resize:vertical;
+  }
+  .ct__field input::placeholder,
+  .ct__field textarea::placeholder{ color:var(--navy-700); opacity:.38; font-weight:400; }
+  .ct__field input:focus,
+  .ct__field textarea:focus{
+    outline:none;
+    border-color:var(--navy);
+    box-shadow:0 0 0 4px rgba(20,66,127,.13);
+  }
+  .ct__field input:user-invalid,
+  .ct__field textarea:user-invalid{ border-color:#C0392B; }
+
+  /* ---- the pill checkboxes ---- */
+  .ct__chips{
+    grid-column:1 / -1;
+    margin:clamp(2px,.6vh,6px) 0 0;
+    padding:0;
+    border:0;
+  }
+  .ct__chips legend{
+    padding:0;
+    margin-bottom:11px;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--navy-700);
+    opacity:.72;
+  }
+  .ct__chiprow{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ position:relative; display:inline-flex; cursor:pointer; }
+  .chip input{
+    position:absolute;
+    width:1px; height:1px;
+    opacity:0;
+    margin:0;
+  }
+  .chip span{
+    display:inline-flex;
+    align-items:center;
+    height:38px;
+    padding:0 16px;
+    border:1.5px solid rgba(20,66,127,.18);
+    border-radius:999px;
+    background:var(--white);
+    font-size:13.5px;
+    font-weight:500;
+    line-height:1;
+    color:var(--navy-700);
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .chip:hover span{ border-color:var(--navy); }
+  .chip input:checked + span{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:var(--white);
+  }
+  .chip input:focus-visible + span{ box-shadow:0 0 0 4px rgba(20,66,127,.16); }
+
+  /* ---- the send row ---- */
+  .ct__send-row{
+    display:flex;
+    align-items:center;
+    gap:clamp(14px,2vw,26px);
+    flex-wrap:wrap;
+    margin-top:clamp(18px,2.6vh,28px);
+  }
+  .ct__send{
+    display:inline-flex;
+    align-items:center;
+    gap:22px;
+    height:52px;
+    padding:0 7px 0 26px;
+    border:0;
+    border-radius:10px;
+    background:var(--navy);
+    color:var(--white);
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.6);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .ct__send:hover{ transform:translateY(-2px); filter:brightness(1.12); }
+  .ct__send .arrow{ background:rgba(255,255,255,.22); width:38px; height:38px; border-radius:8px; }
+  .ct__small{
+    margin:0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(17px,1.4vw,22px);
+    line-height:1.2;
+    color:var(--navy);
+    transform:rotate(-2deg);
+  }
+
+  /* the honeypot - off screen, never focusable, only bots fill it in */
+  .ct__hp{
+    position:absolute;
+    left:-9999px;
+    width:1px; height:1px;
+    overflow:hidden;
+  }
+
+  .ct__msg{
+    margin:clamp(16px,2.2vh,22px) 0 0;
+    padding:14px 16px;
+    border-radius:12px;
+    background:var(--white);
+    border-left:4px solid var(--amber);
+    font-size:14px;
+    font-weight:500;
+    line-height:1.5;
+    color:var(--navy-700);
+  }
+
+  @media (max-width:900px){
+    .ct__inner{ grid-template-columns:1fr; }
+    .ct__title{ max-width:none; }
+  }
+  @media (max-width:560px){
+    .ct__grid{ grid-template-columns:1fr; }
+  }
+
+  /* ==================================================================
+     MOTION LAYER  (v3)
+     Additive by design. The only rules that hide anything are scoped to
+     .js-motion - a class an inline script in <head> sets before first
+     paint - so with JS off the page is exactly v2, fully readable.
+
+     Reveals move the `translate` and `scale` properties rather than
+     `transform`, which leaves `transform` free for the hover lifts and
+     the pointer tilt to use without a specificity fight.
+     ================================================================== */
+
+  /* ---------------------------------------------------- scroll progress */
+  .prog{
+    position:fixed;
+    inset:0 0 auto 0;
+    height:4px;
+    z-index:60;
+    pointer-events:none;
+  }
+  .prog__bar{
+    height:100%;
+    background:linear-gradient(90deg,var(--amber-100),var(--amber),var(--amber-600));
+    transform:scaleX(var(--p,0));
+    transform-origin:0 50%;
+  }
+
+  /* ------------------------------------------------------ reveal on scroll */
+  .js-motion .rv{
+    opacity:0;
+    translate:0 30px;
+    transition:opacity .72s cubic-bezier(.22,.68,.24,1) var(--d,0s),
+               translate .72s cubic-bezier(.22,.68,.24,1) var(--d,0s);
+  }
+  .js-motion .rv--l{ translate:-34px 0; }
+  .js-motion .rv--r{ translate:34px 0; }
+  .js-motion .rv.is-in{ opacity:1; translate:0 0; }
+
+  /* ------------------------------------------------------- hero entrance */
+  /* The headline arrives a word at a time - JS wraps each word, so the
+     markup stays one clean sentence for anything that doesn't run it. */
+  .word{ display:inline-block; }
+  .js-motion .word{
+    opacity:0;
+    translate:0 .5em;
+    rotate:-3deg;
+    transition:opacity .6s ease var(--d,0s),
+               translate .7s cubic-bezier(.2,.9,.25,1.08) var(--d,0s),
+               rotate .7s cubic-bezier(.2,.9,.25,1.08) var(--d,0s);
+  }
+  .js-motion .word.is-in{ opacity:1; translate:0 0; rotate:0deg; }
+
+  /* --------------------------------------------------------- the tickers */
+  /* Two bands crossing between mission and services - navy running left,
+     amber running right. Full-bleed and over-wide so the rotation never
+     shows a corner. Content is written once; JS clones it for the seam. */
+  .tickers{
+    position:relative;
+    z-index:6;
+    margin:clamp(-30px,-2.6vw,-16px) 0 clamp(-30px,-2.4vw,-14px);
+    padding:clamp(26px,4vw,52px) 0;
+    overflow:hidden;
+    pointer-events:none;
+  }
+  .tick{
+    display:flex;
+    width:114%;
+    margin-left:-7%;
+    padding:clamp(9px,1vw,14px) 0;
+    overflow:hidden;
+    box-shadow:0 16px 34px -22px rgba(0,0,0,.5);
+  }
+  /* The two bands converge rather than cross - a fixed gap plus a small
+     difference in angle, sized so the narrow end still clears. Crossing
+     them outright eats a word wherever they meet. */
+  .tick--navy{
+    background:var(--navy);
+    color:var(--amber);
+    rotate:-2.4deg;
+  }
+  .tick--amber{
+    background:var(--amber);
+    color:var(--navy);
+    rotate:-0.7deg;
+    margin-top:clamp(14px,2.2vw,34px);
+  }
+  /* Sitting in the gap between two panels rather than under a curve, so
+     it carries its own spacing - a small overlap at each end so the band
+     still bites into the panel above and the section below. */
+  .tickers--mid{
+    margin:clamp(-26px,-2.2vw,-12px) 0 clamp(-22px,-1.8vw,-10px);
+    padding:clamp(30px,4.4vw,58px) 0;
+  }
+
+  .tick__row{
+    display:flex;
+    flex:0 0 auto;
+    align-items:center;
+    gap:clamp(18px,2vw,34px);
+    padding-right:clamp(18px,2vw,34px);
+    white-space:nowrap;
+    animation:tick-left 32s linear infinite;
+  }
+  .tick--amber .tick__row{ animation-name:tick-right; }
+  .tick__row span{
+    font-size:clamp(15px,1.9vw,26px);
+    font-weight:800;
+    letter-spacing:.01em;
+    text-transform:uppercase;
+    line-height:1.1;
+  }
+  /* every other word is hollow, so the band has a rhythm of its own */
+  .tick__row span:nth-child(4n+3){
+    color:transparent;
+    -webkit-text-stroke:1.8px currentColor;
+  }
+  .tick__row b{
+    flex:0 0 auto;
+    font-size:clamp(13px,1.4vw,20px);
+    opacity:.85;
+  }
+  @keyframes tick-left { from{ transform:translateX(0); }    to{ transform:translateX(-50%); } }
+  @keyframes tick-right{ from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
+
+  /* --------------------------------------------------------- the stamp */
+  /* A rotating seal, the kind that gets stuck on a site because it is
+     fun. Tucks into the top corner of the about panel, inside its
+     rounded clip so the panel keeps its own silhouette. */
+  .stamp{
+    position:absolute;
+    z-index:2;
+    top:clamp(12px,1.4vw,20px);
+    right:clamp(12px,1.4vw,20px);
+    width:clamp(84px,8vw,116px);
+    height:clamp(84px,8vw,116px);
+    color:var(--navy);
+    animation:stamp-spin 20s linear infinite;
+  }
+  .stamp__disc{ fill:var(--amber); }
+  .stamp text{
+    font-family:"Poppins",sans-serif;
+    font-size:10.4px;
+    font-weight:600;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    fill:var(--navy);
+  }
+  .stamp__pin{
+    fill:none;
+    stroke:var(--navy);
+    stroke-width:2.4;
+    stroke-linecap:round;
+  }
+  @keyframes stamp-spin{ to{ transform:rotate(360deg); } }
+
+  /* ------------------------------------------------------ the title wipe */
+  /* An amber stroke that draws itself under a heading as it arrives. */
+  /* the padding drops the box below the font's descenders, so the
+     stroke clears the tail of a p or a j instead of crossing it */
+  .swipe{ position:relative; display:inline-block; padding-bottom:.15em; }
+  .swipe::after{
+    content:"";
+    position:absolute;
+    left:-.06em;
+    right:-.06em;
+    bottom:0;
+    height:.12em;
+    border-radius:.1em;
+    background:var(--amber);
+    transform:scaleX(0);
+    transform-origin:0 50%;
+    opacity:.6;
+  }
+  .js-motion .rv.is-in .swipe::after,
+  .js-motion .swipe.is-in::after{
+    transform:scaleX(1);
+    transition:transform .65s cubic-bezier(.22,.68,.24,1) .28s;
+  }
+
+  /* ------------------------------------------------------- the nav dock */
+  /* The hero's menu comes back as a floating pill once it scrolls away,
+     so the page never leaves you without a way out. Built by JS from the
+     links already in the hero - one source of truth for the menu. */
+  .dock{
+    position:fixed;
+    z-index:55;
+    top:14px;
+    left:50%;
+    translate:-50% -96px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.82);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    backdrop-filter:blur(16px) saturate(140%);
+    box-shadow:0 20px 46px -24px rgba(0,0,0,.55);
+    opacity:0;
+    pointer-events:none;
+    transition:translate .42s cubic-bezier(.2,.9,.25,1.06), opacity .3s ease;
+  }
+  .dock.is-up{ translate:-50% 0; opacity:1; pointer-events:auto; }
+  .dock__mark{
+    display:grid;
+    place-items:center;
+    width:36px; height:36px;
+    border-radius:50%;
+    background:var(--navy);
+    color:var(--white);
+    font-weight:600;
+    font-size:18px;
+    line-height:1;
+    text-decoration:none;
+  }
+  .dock a.dock__link{
+    display:inline-flex;
+    align-items:center;
+    height:36px;
+    padding:0 15px;
+    border-radius:999px;
+    color:var(--navy-700);
+    font-size:13.5px;
+    font-weight:500;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:background .18s ease, color .18s ease;
+  }
+  .dock a.dock__link:hover{ background:var(--navy); color:var(--white); }
+  .dock a.dock__link.is-here{ background:var(--amber); color:var(--navy-700); font-weight:600; }
+  .dock__cta{
+    display:inline-flex;
+    align-items:center;
+    height:36px;
+    padding:0 17px;
+    border-radius:999px;
+    background:var(--navy);
+    color:var(--white);
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  @media (max-width:900px){ .dock{ display:none; } }
+
+  /* ---------------------------------------------------- the trail cursor */
+  /* An amber ring that runs a beat behind the pointer and swells over
+     anything clickable. Desktop pointers only. */
+  .ring{
+    position:fixed;
+    top:0; left:0;
+    z-index:70;
+    width:34px; height:34px;
+    margin:-17px 0 0 -17px;
+    border:2px solid var(--amber);
+    border-radius:50%;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .3s ease, width .22s ease, height .22s ease,
+               margin .22s ease, background .22s ease, border-color .22s ease;
+    will-change:transform;
+  }
+  .ring.is-on{ opacity:.9; }
+  .ring.is-hot{
+    width:56px; height:56px;
+    margin:-28px 0 0 -28px;
+    background:rgba(249,176,22,.18);
+    border-color:var(--amber-600);
+  }
+  .ring.is-dark{ border-color:var(--amber-100); }
+
+  /* ----------------------------------------------------- card interaction */
+  /* JS writes the tilt straight to inline transform while a card is
+     under the pointer, so it beats the hover rule instead of racing it. */
+  .svc__card, .mv__card, .about__aside{ transform-style:preserve-3d; }
+  .svc__card, .mv__card{ position:relative; overflow:hidden; }
+  /* a light sweeps across the card as the pointer crosses it */
+  .svc__card::after,
+  .mv__card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(220px circle at var(--gx,50%) var(--gy,0%),
+               rgba(255,255,255,.20), transparent 62%);
+    opacity:0;
+    transition:opacity .3s ease;
+    pointer-events:none;
+  }
+  .svc__card:hover::after,
+  .mv__card:hover::after{ opacity:1; }
+  .mv__card--vision::after,
+  .svc__card.wcard--amber::after,
+  .svc__card.wcard--gold::after{
+    background:radial-gradient(220px circle at var(--gx,50%) var(--gy,0%),
+               rgba(255,255,255,.42), transparent 62%);
+  }
+
+  /* the counters shouldn't reflow the row while they tick up */
+  .about__stats b{ font-variant-numeric:tabular-nums; }
+
+  /* --------------------------------------------------------- calm mode */
+  @media (prefers-reduced-motion:reduce){
+    .js-motion .rv,
+    .js-motion .word{ opacity:1; translate:none; rotate:none; transition:none; }
+    .tick__row{ animation:none; }
+    .stamp{ animation:none; }
+    .swipe::after{ transform:scaleX(1); transition:none; }
+    .ring{ display:none; }
+    .dock{ transition:none; }
+    .prog__bar{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+
+  <!-- wave landscape ------------------------------------------------- -->
+  <svg class="hero__waves" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true">
+    <g class="wave wave--1">
+      <path d="M0,300 C 90,225 205,125 335,128 C 475,131 565,255 665,345 C 765,432 835,472 935,455 C 1055,435 1125,298 1252,288 C 1345,281 1402,322 1440,352 L1440,780 L0,780 Z"/>
+    </g>
+    <g class="wave wave--2">
+      <path d="M0,470 C 115,468 195,378 325,368 C 465,357 545,470 665,512 C 785,553 855,520 965,468 C 1085,412 1165,330 1292,342 C 1372,349 1412,392 1440,422 L1440,780 L0,780 Z"/>
+    </g>
+    <g class="wave wave--3">
+      <path d="M0,598 C 125,596 205,518 345,513 C 485,508 545,588 665,600 C 795,612 865,540 995,520 C 1115,502 1185,560 1305,576 C 1372,585 1412,600 1440,608 L1440,780 L0,780 Z"/>
+    </g>
+  </svg>
+
+  <!-- nav ------------------------------------------------------------ -->
+  <nav class="nav">
+    <a class="brand" href="#" aria-label="blue advertising agency - home">
+      <span class="brand__word"><span class="brand__flag" aria-hidden="true"></span>blue</span>
+      <span class="brand__tag">advertising agency</span>
+    </a>
+
+    <ul class="nav__menu">
+      <li><a class="nav__link" href="#about">Who we are</a></li>
+      <li><a class="nav__link" href="#mission">Mission</a></li>
+      <li><a class="nav__link" href="#services">Services</a></li>
+      <li><a class="nav__link" href="#work">Projects</a></li>
+      <li>
+        <a class="nav__cta" href="#contact">Let&rsquo;s talk
+          <span class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav__social">
+      <a class="social" href="#" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="social" href="#" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3h-2.7v12.1a2.6 2.6 0 1 1-2.1-2.55v-2.7a5.3 5.3 0 1 0 4.8 5.27V9.1a6.4 6.4 0 0 0 3.6 1.1V7.5a3.8 3.8 0 0 1-3.6-3.8Z"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- phone ---------------------------------------------------------- -->
+  <!-- Posts come from assets/work/web/ (800px JPEGs generated from the
+       full-size PNGs in assets/work/). Each project is written once; the
+       duplicate pass that makes the scroll loop seamless is cloned by
+       script, so a post is only ever edited in one place. -->
+  <div class="phone" aria-label="Selected work, as an Instagram feed">
+    <div class="phone__island" aria-hidden="true"></div>
+
+    <div class="phone__screen">
+
+      <!-- status bar -->
+      <div class="ig__status" aria-hidden="true">
+        <span>9:41</span>
+        <span class="ig__signal">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="14" width="3.4" height="6" rx="1"/><rect x="7" y="10" width="3.4" height="10" rx="1"/><rect x="13" y="6" width="3.4" height="14" rx="1"/><rect x="19" y="2" width="3.4" height="18" rx="1"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.5a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1.1" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1.5" y="7" width="17" height="10" rx="2.6"/><rect x="3.6" y="9.1" width="11" height="5.8" rx="1.4" fill="currentColor" stroke="none"/><path d="M21 10.5v3" stroke-linecap="round"/></svg>
+        </span>
+      </div>
+
+      <!-- app bar -->
+      <div class="ig__bar">
+        <span class="ig__logo">blue</span>
+        <span class="ig__bar-icons" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+        </span>
+      </div>
+
+      <!-- stories -->
+      <div class="ig__stories" aria-hidden="true">
+        <span class="story story--me">
+          <span class="story__ring"><span class="story__face">b</span></span>
+          <span class="story__name">your&nbsp;story</span>
+        </span>
+        <span class="story">
+          <span class="story__ring"><span class="story__face"><img src="assets/work/web/03.jpg" alt=""></span></span>
+          <span class="story__name">build&nbsp;day</span>
+        </span>
+        <span class="story">
+          <span class="story__ring"><span class="story__face"><img src="assets/work/web/05.jpg" alt=""></span></span>
+          <span class="story__name">stage</span>
+        </span>
+        <span class="story">
+          <span class="story__ring"><span class="story__face"><img src="assets/work/web/02.jpg" alt=""></span></span>
+          <span class="story__name">hall&nbsp;4</span>
+        </span>
+        <span class="story">
+          <span class="story__ring"><span class="story__face"><img src="assets/work/web/04.jpg" alt=""></span></span>
+          <span class="story__name">pavilion</span>
+        </span>
+      </div>
+
+      <!-- feed -->
+      <div class="ig__feed">
+        <div class="ig__track" id="igTrack">
+
+          <!-- PLACEHOLDER COPY - replace the location line, the caption and
+               the counts on each post. The alt text already describes each
+               image; keep it accurate. -->
+
+          <article class="post">
+            <header class="post__head">
+              <span class="post__face" aria-hidden="true">b</span>
+              <span class="post__who">
+                <b class="post__user">blue.agency</b>
+                <span class="post__place">Exhibition stand &middot; Event &middot; Year</span>
+              </span>
+              <span class="post__more" aria-hidden="true">&middot;&middot;&middot;</span>
+            </header>
+            <div class="post__media"><img src="assets/work/web/01.jpg" alt="Exhibition stand with illuminated canopy and product display screens"></div>
+            <div class="post__acts" aria-hidden="true">
+              <span class="post__like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.4 8.4 0 0 1-11.9 7.6L3 21l1.4-6.1A8.4 8.4 0 1 1 21 12Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+              <span class="post__save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.6L6 21V3Z"/></svg></span>
+            </div>
+            <p class="post__likes">1,284 likes</p>
+            <p class="post__cap"><b>blue.agency</b> Project One - what we were asked for, and what we built. #exhibitionstand</p>
+            <p class="post__time">2 days ago</p>
+          </article>
+
+          <article class="post">
+            <header class="post__head">
+              <span class="post__face" aria-hidden="true">b</span>
+              <span class="post__who">
+                <b class="post__user">blue.agency</b>
+                <span class="post__place">Exhibition stand &middot; Event &middot; Year</span>
+              </span>
+              <span class="post__more" aria-hidden="true">&middot;&middot;&middot;</span>
+            </header>
+            <div class="post__media"><img src="assets/work/web/02.jpg" alt="Exhibition stand in orange and pink with a curved information desk"></div>
+            <div class="post__acts" aria-hidden="true">
+              <span class="post__like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.4 8.4 0 0 1-11.9 7.6L3 21l1.4-6.1A8.4 8.4 0 1 1 21 12Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+              <span class="post__save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.6L6 21V3Z"/></svg></span>
+            </div>
+            <p class="post__likes">972 likes</p>
+            <p class="post__cap"><b>blue.agency</b> Project Two - a curved welcome desk that kept the queue moving. #standdesign</p>
+            <p class="post__time">5 days ago</p>
+          </article>
+
+          <article class="post">
+            <header class="post__head">
+              <span class="post__face" aria-hidden="true">b</span>
+              <span class="post__who">
+                <b class="post__user">blue.agency</b>
+                <span class="post__place">Exhibition stand &middot; Event &middot; Year</span>
+              </span>
+              <span class="post__more" aria-hidden="true">&middot;&middot;&middot;</span>
+            </header>
+            <div class="post__media"><img src="assets/work/web/03.jpg" alt="Pharmaceutical stand with suspended signage and blue-green lighting"></div>
+            <div class="post__acts" aria-hidden="true">
+              <span class="post__like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.4 8.4 0 0 1-11.9 7.6L3 21l1.4-6.1A8.4 8.4 0 1 1 21 12Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+              <span class="post__save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.6L6 21V3Z"/></svg></span>
+            </div>
+            <p class="post__likes">2,110 likes</p>
+            <p class="post__cap"><b>blue.agency</b> Project Three - suspended signage you can find from the far end of the hall. #wayfinding</p>
+            <p class="post__time">1 week ago</p>
+          </article>
+
+          <article class="post">
+            <header class="post__head">
+              <span class="post__face" aria-hidden="true">b</span>
+              <span class="post__who">
+                <b class="post__user">blue.agency</b>
+                <span class="post__place">Pavilion design &middot; Event &middot; Year</span>
+              </span>
+              <span class="post__more" aria-hidden="true">&middot;&middot;&middot;</span>
+            </header>
+            <div class="post__media"><img src="assets/work/web/04.jpg" alt="Arched white and yellow exhibition pavilion with open seating"></div>
+            <div class="post__acts" aria-hidden="true">
+              <span class="post__like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.4 8.4 0 0 1-11.9 7.6L3 21l1.4-6.1A8.4 8.4 0 1 1 21 12Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+              <span class="post__save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.6L6 21V3Z"/></svg></span>
+            </div>
+            <p class="post__likes">1,846 likes</p>
+            <p class="post__cap"><b>blue.agency</b> Project Four - arches, shade and somewhere to sit down. #pavilion</p>
+            <p class="post__time">2 weeks ago</p>
+          </article>
+
+          <article class="post">
+            <header class="post__head">
+              <span class="post__face" aria-hidden="true">b</span>
+              <span class="post__who">
+                <b class="post__user">blue.agency</b>
+                <span class="post__place">Conference stage &middot; Event &middot; Year</span>
+              </span>
+              <span class="post__more" aria-hidden="true">&middot;&middot;&middot;</span>
+            </header>
+            <div class="post__media"><img src="assets/work/web/05.jpg" alt="Conference stage with a large presentation screen and tiered platform"></div>
+            <div class="post__acts" aria-hidden="true">
+              <span class="post__like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3Z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.4 8.4 0 0 1-11.9 7.6L3 21l1.4-6.1A8.4 8.4 0 1 1 21 12Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3 2.8 9.6l7.4 2.7 2.7 7.4L21.5 3Z"/><path d="M10.2 12.3 21.5 3"/></svg>
+              <span class="post__save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.6L6 21V3Z"/></svg></span>
+            </div>
+            <p class="post__likes">3,402 likes</p>
+            <p class="post__cap"><b>blue.agency</b> Project Five - doors at nine, first slide at half past. #conferencestage</p>
+            <p class="post__time">3 weeks ago</p>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- tab bar -->
+      <nav class="ig__tabs" aria-hidden="true">
+        <span class="is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 10.4 12 3l9 7.4V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.6Z"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.7" cy="10.7" r="7.2"/><path d="m16.2 16.2 4.3 4.3"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4.5"/><path d="m10.2 8.6 5.2 3.4-5.2 3.4V8.6Z"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8h16l-1.2 12.2a1 1 0 0 1-1 .8H6.2a1 1 0 0 1-1-.8L4 8Z"/><path d="M8.6 8V6.2a3.4 3.4 0 0 1 6.8 0V8"/></svg></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.9"/><path d="M4.6 20.4a7.6 7.6 0 0 1 14.8 0"/></svg></span>
+      </nav>
+
+      <span class="phone__home" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <!-- copy ----------------------------------------------------------- -->
+  <div class="hero__inner">
+    <h1 class="hero__title">Somewhere between a floor plan and a first impression</h1>
+
+    <p class="hero__lede">
+      That gap is where we work. We design and build exhibition stands, pavilions and
+      conference stages - turning a plan on paper into the moment someone decides
+      you&rsquo;re worth their time.
+    </p>
+
+    <a class="hero__btn" href="#contact">Start a project
+      <span class="arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+  </div>
+
+  <p class="hero__note" data-typed="from sketch&#10;to show floor">from sketch<br>to show floor</p>
+
+  <div class="hero__badge mark" aria-hidden="true"><span class="mark__b">b</span></div>
+
+</section>
+
+
+<!-- ===================================================== who we are === -->
+<!-- PLACEHOLDER COPY - the story and the numbers are stand-ins. -->
+<section class="about" id="about">
+  <div class="about__inner">
+
+    <div class="about__copy">
+      <p class="about__note">how we are ?</p>
+      <h2 class="about__title">An agency that <em>draws first</em>, then builds.</h2>
+      <p class="about__lede">blue is an advertising agency working where the drawing meets the
+        show floor - exhibition stands, pavilions and conference stages, taken from the first
+        sketch through to the last panel going up.</p>
+      <p class="about__text">Designers, 3D artists, fabricators and site crew sit in one team, so
+        the stand you approved on screen is the stand that opens on day one. No handover between
+        three suppliers, no drawings that turn out to be unbuildable, no surprises in hall four
+        at midnight.</p>
+
+      <a class="about__cta" href="#services">What we do
+        <span class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <aside class="about__aside">
+      <!-- a seal that turns, because a page this warm should have one -->
+      <svg class="stamp" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <path id="stampArc" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/>
+        </defs>
+        <circle class="stamp__disc" cx="50" cy="50" r="46"/>
+        <text><textPath href="#stampArc">design &#183; build &#183; install &#183; </textPath></text>
+        <path class="stamp__pin" d="m41 51 6 6 13-15"/>
+      </svg>
+      <!-- the pencil from the index board -->
+      <div class="about__glyph">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M44 6 58 20 24 54 8 58l4-16z"/>
+          <path d="m38 12 14 14"/>
+          <path d="m12 42 10 10"/>
+        </svg>
+      </div>
+
+      <h3>Sketch, render, build, stand there with you.</h3>
+      <p>One team from the first pencil line to strike-out night - which is why we can put a date
+        on the build before you sign anything.</p>
+
+      <ul class="about__stats">
+        <li><b>12</b><span>years on show floors</span></li>
+        <li><b>180+</b><span>stands delivered</span></li>
+        <li><b>9</b><span>countries built in</span></li>
+      </ul>
+    </aside>
+
+  </div>
+</section>
+
+<!-- ============================================== mission &amp; vision === -->
+<!-- PLACEHOLDER COPY - replace with the agency's own wording. -->
+<section class="mv" id="mission">
+  <div class="mv__head">
+    <p class="mv__note">why we bother</p>
+    <h2 class="mv__title">Our mission &amp; vision</h2>
+    <p class="mv__sub">Two sentences we actually hold ourselves to - one about the work in front
+      of us, one about where it is going.</p>
+  </div>
+
+  <div class="mv__grid">
+
+    <article class="mv__card mv__card--mission">
+      <!-- the lit bulb from the index board -->
+      <div class="mv__icon">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M32 8a15 15 0 0 0-9 27v5h18v-5a15 15 0 0 0-9-27Z"/>
+          <path d="M26 48h12M28 54h8"/>
+          <path d="M32 2v3M52 12l-2 2M12 12l2 2M58 30h-3M9 30H6"/>
+        </svg>
+      </div>
+      <p class="mv__label">Our mission</p>
+      <h3 class="mv__ttl">Make the stand do the selling.</h3>
+      <p class="mv__text">A stand is not decoration - it is a room built to start conversations.
+        We design for the walk-past, the pause and the handshake, then build it to survive four
+        days of it.</p>
+      <ul class="mv__list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          One team, one contact, one number to call
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          A price that holds from render to build day
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          On site until the show closes, not just until it opens
+        </li>
+      </ul>
+    </article>
+
+    <article class="mv__card mv__card--vision">
+      <!-- the launch mark from the index board -->
+      <div class="mv__icon">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M30 40 24 34c2-11 9-21 21-25 4 11 1 22-9 31Z"/>
+          <path d="m24 34-9 3 3 10 12-7"/>
+          <path d="M22 44c-3 3-4 8-4 8s5-1 8-4"/>
+        </svg>
+      </div>
+      <p class="mv__label">Our vision</p>
+      <h3 class="mv__ttl">The build partner people ask for by name.</h3>
+      <p class="mv__text">To be the team organisers recommend and clients bring to every show -
+        because the work is good, the timeline is honest and nothing has to be explained twice.</p>
+      <ul class="mv__list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          Reusable systems over single-show waste
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          A regional crew that travels with the stand
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+          Clients who come back before they brief anyone else
+        </li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================================================== tickers (2) === -->
+<!-- Decorative, same as the pair under the hero - the words only repeat
+     what the services section below says in full. -->
+<div class="tickers tickers--mid" aria-hidden="true">
+  <div class="tick tick--navy">
+    <div class="tick__row">
+      <span>Exhibition stands</span><b>&#10037;</b>
+      <span>Pavilions</span><b>&#10037;</b>
+      <span>Conference stages</span><b>&#10037;</b>
+      <span>3D design</span><b>&#10037;</b>
+      <span>Print &amp; branding</span><b>&#10037;</b>
+      <span>On-site crew</span><b>&#10037;</b>
+    </div>
+  </div>
+  <div class="tick tick--amber">
+    <div class="tick__row">
+      <span>From sketch</span><b>&rarr;</b>
+      <span>to show floor</span><b>&rarr;</b>
+      <span>Designed in 3D</span><b>&rarr;</b>
+      <span>Built by us</span><b>&rarr;</b>
+      <span>Standing on day one</span><b>&rarr;</b>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================== services ==== -->
+<!-- PLACEHOLDER COPY - service names and lines are stand-ins. -->
+<section class="svc" id="services">
+  <div class="svc__head">
+    <p class="svc__note">everything under one roof</p>
+    <h2 class="svc__title">Our services</h2>
+    <p class="svc__sub">Design, fabrication and the crew who put it up. Take the whole thing or
+      only the part you are missing.</p>
+  </div>
+
+  <div class="svc__grid">
+
+    <article class="svc__card wcard--navy">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 54h52"/><path d="M14 54V22h36v32"/><path d="M14 22h36l-4-12H18Z"/><path d="M26 54V36h12v18"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">Exhibition stands</h3>
+      <p class="svc__text">Custom stands from 12sqm corners to double-deck islands - designed,
+        built, shipped and installed.</p>
+      <p class="svc__num">01</p>
+    </article>
+
+    <article class="svc__card wcard--amber">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 52h52"/><path d="M10 52V30a22 22 0 0 1 44 0v22"/><path d="M22 52V32a10 10 0 0 1 20 0v20"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">Pavilions</h3>
+      <p class="svc__text">Country and group pavilions where twenty exhibitors have to share one
+        floor and still look like one idea.</p>
+      <p class="svc__num">02</p>
+    </article>
+
+    <article class="svc__card wcard--blue">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 46h48v10H8z"/><path d="M14 46V22h36v24"/><path d="M22 12v10M42 12v10M32 8v14"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">Conference stages</h3>
+      <p class="svc__text">Sets, screens, lighting and rigging for keynotes, launches and award
+        nights - built to camera as well as to the room.</p>
+      <p class="svc__num">03</p>
+    </article>
+
+    <article class="svc__card wcard--gold">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M32 6 56 19v26L32 58 8 45V19Z"/><path d="M32 6v26m0 0 24-13M32 32 8 19m24 13v26"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">3D design &amp; visuals</h3>
+      <p class="svc__text">Concepts, renders and walkthroughs, so the stand is approved on screen
+        long before the first panel is cut.</p>
+      <p class="svc__num">04</p>
+    </article>
+
+    <article class="svc__card wcard--deep">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="32" cy="32" r="9"/>
+          <path d="M32 5v8m0 38v8M5 32h8m38 0h8M13 13l6 6m26 26 6 6M51 13l-6 6M19 45l-6 6"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">Branding &amp; print</h3>
+      <p class="svc__text">Graphics, wayfinding, giveaways and every printed surface on the stand,
+        colour-matched in one pass.</p>
+      <p class="svc__num">05</p>
+    </article>
+
+    <article class="svc__card wcard--amber">
+      <div class="svc__ico">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M32 8 10 18v14c0 13 9 21 22 24 13-3 22-11 22-24V18Z"/>
+          <path d="m23 32 6 6 13-13"/>
+        </svg>
+      </div>
+      <h3 class="svc__ttl">On-site management</h3>
+      <p class="svc__text">Permits, contractors, build, daily maintenance and strike-out. Our crew
+        stays for the whole show.</p>
+      <p class="svc__num">06</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ==================================================== recent work === -->
+<!-- PLACEHOLDER COPY - titles, tags and text are stand-ins. -->
+<section class="work" id="work">
+  <div class="work__head">
+    <p class="work__note">built, not just rendered</p>
+    <h2 class="work__title">Recent work</h2>
+    <p class="work__sub">A few of the stands, pavilions and stages we&rsquo;ve designed and built.
+      There is more where these came from.</p>
+  </div>
+
+  <div class="work__nav">
+    <button class="work__btn" id="workPrev" type="button" aria-label="Previous projects" aria-controls="workRail" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+    </button>
+    <button class="work__btn" id="workNext" type="button" aria-label="More projects" aria-controls="workRail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <div class="work__floor" id="workFloor" aria-hidden="true"></div>
+
+  <div class="wrail" id="workRail" tabindex="0" role="region" aria-label="Recent projects">
+      <article class="wcard wcard--navy">
+        <div class="wcard__media"><img src="assets/work/web/01.jpg" alt="Exhibition stand" loading="lazy"></div>
+        <ul class="wcard__tags">
+          <li>Exhibition stand</li><li>Venue</li><li>Year</li>
+        </ul>
+        <h3 class="wcard__title">Project One</h3>
+        <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
+      </article>
+
+      <article class="wcard wcard--amber">
+        <div class="wcard__media"><img src="assets/work/web/02.jpg" alt="Exhibition stand" loading="lazy"></div>
+        <ul class="wcard__tags">
+          <li>Exhibition stand</li><li>Venue</li><li>Year</li>
+        </ul>
+        <h3 class="wcard__title">Project Two</h3>
+        <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
+      </article>
+
+      <article class="wcard wcard--blue">
+        <div class="wcard__media"><img src="assets/work/web/03.jpg" alt="Exhibition stand" loading="lazy"></div>
+        <ul class="wcard__tags">
+          <li>Exhibition stand</li><li>Venue</li><li>Year</li>
+        </ul>
+        <h3 class="wcard__title">Project Three</h3>
+        <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
+      </article>
+
+      <article class="wcard wcard--gold">
+        <div class="wcard__media"><img src="assets/work/web/04.jpg" alt="Pavilion design" loading="lazy"></div>
+        <ul class="wcard__tags">
+          <li>Pavilion design</li><li>Venue</li><li>Year</li>
+        </ul>
+        <h3 class="wcard__title">Project Four</h3>
+        <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
+      </article>
+
+      <article class="wcard wcard--deep">
+        <div class="wcard__media"><img src="assets/work/web/05.jpg" alt="Conference stage" loading="lazy"></div>
+        <ul class="wcard__tags">
+          <li>Conference stage</li><li>Venue</li><li>Year</li>
+        </ul>
+        <h3 class="wcard__title">Project Five</h3>
+        <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
+      </article>
+  </div>
+</section>
+
+<!-- ================================================ how it works ==== -->
+<section class="how" id="process">
+  <div class="how__head">
+    <div>
+      <h2 class="how__title"><span>How it works</span></h2>
+      <p class="how__note">four steps, no surprises</p>
+    </div>
+
+    <a class="how__cta" href="#contact">Start a project
+      <span class="arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+  </div>
+
+  <div class="steps">
+
+    <article class="step step--1">
+      <p class="step__label">Step #1</p>
+      <div class="step__art">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="7" y="11" width="42" height="42" rx="3"/>
+          <path d="M7 24h42M21 11v42M35 24v29"/>
+          <path d="M44 47l11-11 5 5-11 11-6 1z"/>
+        </svg>
+      </div>
+      <h3 class="step__title">The brief &amp; the floor</h3>
+      <p class="step__text">Tell us the space, the show and what you need people to walk away knowing. We measure everything else.</p>
+    </article>
+
+    <article class="step step--2">
+      <p class="step__label">Step #2</p>
+      <div class="step__art">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M32 6 56 19v26L32 58 8 45V19Z"/>
+          <path d="M32 6v26m0 0 24-13M32 32 8 19m24 13v26"/>
+        </svg>
+      </div>
+      <h3 class="step__title">Designed in 3D</h3>
+      <p class="step__text">You see the stand before it exists - renders from every angle, so nothing is a surprise on build day.</p>
+    </article>
+
+    <article class="step step--3">
+      <p class="step__label">Step #3</p>
+      <div class="step__art">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 55h52"/>
+          <path d="M16 55V24h32v31"/>
+          <path d="m14 24 18-13 18 13"/>
+          <path d="M25 55V38h14v17"/>
+          <path d="M25 31h14"/>
+        </svg>
+      </div>
+      <h3 class="step__title">We build it</h3>
+      <p class="step__text">Fabrication, print, lighting and fit-out handled by one team. One number to call when something changes.</p>
+    </article>
+
+    <article class="step step--4">
+      <p class="step__label">Step #4</p>
+      <div class="step__art">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="23" cy="26" r="7"/>
+          <path d="M11 48c0-7 5.5-12 12-12s12 5 12 12"/>
+          <circle cx="45" cy="31" r="5.5"/>
+          <path d="M37 48c0-5.5 3.5-9 8-9s8 3.5 8 9"/>
+          <path d="m50 8 2.2 5.3L57.5 15l-5.3 2.2L50 22.5l-2.2-5.3L42.5 15l5.3-1.7z"/>
+        </svg>
+      </div>
+      <h3 class="step__title">You just show up</h3>
+      <p class="step__text">Doors open on a finished stand. We stay on site through the show, then strip it out when it&rsquo;s over.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================================================== get in touch === -->
+<!-- PLACEHOLDER COPY - phone, email and address are the same stand-ins
+     the footer carries. #contact lives here rather than on the footer,
+     so every "Let's talk" and "Start a project" on the page lands on
+     the form itself instead of a list of links. -->
+<section class="ct" id="contact">
+  <div class="ct__inner">
+
+    <div class="ct__copy">
+      <p class="ct__note">tell us the show &amp; the date</p>
+      <h2 class="ct__title">Start a project</h2>
+      <p class="ct__lede">Send the stand size, the hall and the date. You get a reply within one
+        working day - a real one, from the person who would run the build.</p>
+
+      <ul class="ct__meta">
+        <li class="ct__row">
+          <span class="ct__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a6 6 0 0 1 5 5"/><path d="M14.5 7a3 3 0 0 1 2.5 2.5"/><path d="M5.2 3.6h3l1.5 4-2 1.4a12 12 0 0 0 5.3 5.3l1.4-2 4 1.5v3a1.8 1.8 0 0 1-2 1.8A16.5 16.5 0 0 1 3.4 5.6a1.8 1.8 0 0 1 1.8-2Z"/></svg>
+          </span>
+          <span>
+            <b>Call the studio</b>
+            <a href="tel:+000000000000">+00 000 000 0000</a>
+          </span>
+        </li>
+
+        <li class="ct__row">
+          <span class="ct__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.6"/><path d="m3.4 6.4 8.6 6 8.6-6"/></svg>
+          </span>
+          <span>
+            <b>Email</b>
+            <a href="mailto:hello@blue.agency">hello@blue.agency</a>
+          </span>
+        </li>
+
+        <li class="ct__row">
+          <span class="ct__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s7.5-6.2 7.5-11.5a7.5 7.5 0 0 0-15 0C4.5 15.3 12 21.5 12 21.5Z"/><circle cx="12" cy="10" r="2.8"/></svg>
+          </span>
+          <span>
+            <b>The workshop</b>
+            <span class="ct__val">Street address<br>City, Country</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="ct__panel">
+      <!-- PLACEHOLDER: this form has nowhere to post yet. Put your handler
+           URL in data-endpoint (or set action= and method= yourself) and
+           the script stops intercepting - it only exists to say so plainly
+           while the form is unwired, rather than fake a thank-you. -->
+      <form class="ct__form" id="ctForm" method="post" data-endpoint="">
+
+        <div class="ct__grid">
+          <p class="ct__field">
+            <label for="ctName">Your name <i aria-hidden="true">*</i></label>
+            <input id="ctName" name="name" type="text" autocomplete="name" required placeholder="Jane Doe">
+          </p>
+
+          <p class="ct__field">
+            <label for="ctCompany">Company</label>
+            <input id="ctCompany" name="company" type="text" autocomplete="organization" placeholder="Company name">
+          </p>
+
+          <p class="ct__field">
+            <label for="ctEmail">Email <i aria-hidden="true">*</i></label>
+            <input id="ctEmail" name="email" type="email" autocomplete="email" required placeholder="you@company.com">
+          </p>
+
+          <p class="ct__field">
+            <label for="ctShow">Show or venue</label>
+            <input id="ctShow" name="show" type="text" placeholder="Which show, which hall">
+          </p>
+
+          <fieldset class="ct__chips">
+            <legend>What do you need?</legend>
+            <div class="ct__chiprow">
+              <label class="chip"><input type="checkbox" name="need" value="Exhibition stand"><span>Exhibition stand</span></label>
+              <label class="chip"><input type="checkbox" name="need" value="Pavilion"><span>Pavilion</span></label>
+              <label class="chip"><input type="checkbox" name="need" value="Conference stage"><span>Conference stage</span></label>
+              <label class="chip"><input type="checkbox" name="need" value="Print &amp; branding"><span>Print &amp; branding</span></label>
+              <label class="chip"><input type="checkbox" name="need" value="Not sure yet"><span>Not sure yet</span></label>
+            </div>
+          </fieldset>
+
+          <p class="ct__field ct__field--wide">
+            <label for="ctMessage">The brief <i aria-hidden="true">*</i></label>
+            <textarea id="ctMessage" name="message" required placeholder="Stand size, dates, what you need people to walk away knowing."></textarea>
+          </p>
+        </div>
+
+        <p class="ct__hp" aria-hidden="true">
+          <label for="ctWebsite">Leave this field empty</label>
+          <input id="ctWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+        </p>
+
+        <div class="ct__send-row">
+          <button class="ct__send" type="submit">Send it over
+            <span class="arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </span>
+          </button>
+          <p class="ct__small">one working day, promise</p>
+        </div>
+
+        <p class="ct__msg" id="ctMsg" role="status" hidden></p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================================================== footer ==== -->
+<!-- PLACEHOLDER COPY - address, phone and email are stand-ins. -->
+<footer class="foot" id="footer">
+
+  <!-- the hero's wave landscape, flipped and recoloured navy -->
+  <svg class="foot__waves" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true">
+    <g class="wave wave--1">
+      <path d="M0,300 C 90,225 205,125 335,128 C 475,131 565,255 665,345 C 765,432 835,472 935,455 C 1055,435 1125,298 1252,288 C 1345,281 1402,322 1440,352 L1440,780 L0,780 Z"/>
+    </g>
+    <g class="wave wave--2">
+      <path d="M0,470 C 115,468 195,378 325,368 C 465,357 545,470 665,512 C 785,553 855,520 965,468 C 1085,412 1165,330 1292,342 C 1372,349 1412,392 1440,422 L1440,780 L0,780 Z"/>
+    </g>
+    <g class="wave wave--3">
+      <path d="M0,598 C 125,596 205,518 345,513 C 485,508 545,588 665,600 C 795,612 865,540 995,520 C 1115,502 1185,560 1305,576 C 1372,585 1412,600 1440,608 L1440,780 L0,780 Z"/>
+    </g>
+  </svg>
+
+  <div class="foot__inner">
+
+    <div class="foot__call">
+      <div>
+        <h2 class="foot__title">Let&rsquo;s build something worth <em>walking into</em>.</h2>
+        <p class="foot__note">tell us the show &amp; the date</p>
+      </div>
+
+      <a class="foot__cta" href="mailto:hello@blue.agency">Start a project
+        <span class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <div class="foot__cols">
+
+      <div class="foot__brand">
+        <a class="brand" href="#" aria-label="blue advertising agency - home">
+          <span class="brand__word"><span class="brand__flag" aria-hidden="true"></span>blue</span>
+          <span class="brand__tag">advertising agency</span>
+        </a>
+        <p class="foot__blurb">We design and build exhibition stands, pavilions and conference
+          stages - from the first sketch to the show floor, and out again when it&rsquo;s over.</p>
+
+        <div class="foot__social">
+          <a class="social" href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="social" href="#" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3h-2.7v12.1a2.6 2.6 0 1 1-2.1-2.55v-2.7a5.3 5.3 0 1 0 4.8 5.27V9.1a6.4 6.4 0 0 0 3.6 1.1V7.5a3.8 3.8 0 0 1-3.6-3.8Z"/></svg>
+          </a>
+          <a class="social" href="#" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9.5h4v11H3v-11Zm6.5 0h3.8v1.5h.06a4.2 4.2 0 0 1 3.77-2c4 0 4.75 2.5 4.75 5.8v5.7h-4v-5c0-1.2 0-2.8-1.8-2.8s-2.08 1.3-2.08 2.7v5.1h-4v-11Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <nav aria-labelledby="footExplore">
+        <h3 class="foot__ttl" id="footExplore">Explore</h3>
+        <ul class="foot__list">
+          <li><a href="#about">Who we are</a></li>
+          <li><a href="#mission">Mission &amp; vision</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#work">Projects</a></li>
+          <li><a href="#process">How it works</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footServices">
+        <h3 class="foot__ttl" id="footServices">What we do</h3>
+        <ul class="foot__list">
+          <li><a href="#services">Exhibition stands</a></li>
+          <li><a href="#services">Pavilions</a></li>
+          <li><a href="#services">Conference stages</a></li>
+          <li><a href="#services">Print &amp; fit-out</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h3 class="foot__ttl">Get in touch</h3>
+        <ul class="foot__list foot__list--plain">
+          <li><a href="mailto:hello@blue.agency">hello@blue.agency</a></li>
+          <li><a href="tel:+000000000000">+00 000 000 0000</a></li>
+          <li><span>Street address<br>City, Country</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="foot__base">
+      <p>&copy; <span id="footYear">2026</span> blue advertising agency. All rights reserved.</p>
+      <p class="foot__legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  /* Hovering one step card scatters the other three out of the way -
+     a fresh random spread on every hover, so it never looks canned. */
+  (function () {
+    var deck = document.querySelector('.steps');
+    if (!deck) return;
+
+    var cards = Array.prototype.slice.call(deck.querySelectorAll('.step'));
+    if (cards.length < 2) return;
+
+    var fanned = window.matchMedia('(min-width:1101px)');
+    var calm   = window.matchMedia('(prefers-reduced-motion:reduce)');
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function clear() {
+      deck.classList.remove('is-scattered');
+      cards.forEach(function (c) {
+        c.classList.remove('is-hot');
+        c.style.removeProperty('--sx');
+        c.style.removeProperty('--sy');
+        c.style.removeProperty('--srot');
+        c.style.removeProperty('--sc');
+        c.style.removeProperty('z-index');
+      });
+    }
+
+    function scatter(hot) {
+      if (!fanned.matches || calm.matches) return;
+
+      var i = cards.indexOf(hot);
+      deck.classList.add('is-scattered');
+
+      cards.forEach(function (card, j) {
+        if (card === hot) {
+          card.classList.add('is-hot');
+          card.style.removeProperty('--sx');
+          card.style.removeProperty('--sy');
+          card.style.removeProperty('--srot');
+          return;
+        }
+        card.classList.remove('is-hot');
+
+        var gap  = j - i;                       // which side of the hovered card
+        var away = gap < 0 ? -1 : 1;
+        var step = Math.abs(gap);               // further cards travel further
+
+        card.style.setProperty('--sx',   (away * rand(34, 62) * (0.7 + step * 0.35)).toFixed(1) + 'px');
+        card.style.setProperty('--sy',   rand(-26, 30).toFixed(1) + 'px');
+        card.style.setProperty('--srot', (away * rand(3, 11)).toFixed(1) + 'deg');
+        card.style.setProperty('--sc',   rand(0.93, 0.98).toFixed(3));
+        card.style.zIndex = String(4 - step);
+      });
+    }
+
+    /* A scattered card can sit outside the deck's own box, so we settle
+       on "left the deck" with a short grace period instead of geometry. */
+    var leaving = 0;
+    function hold()  { clearTimeout(leaving); }
+    function leave() { hold(); leaving = setTimeout(clear, 70); }
+
+    cards.forEach(function (card) {
+      card.addEventListener('pointerenter', function () { hold(); scatter(card); });
+      card.addEventListener('pointerleave', leave);
+      card.addEventListener('focusin',      function () { hold(); scatter(card); });
+    });
+
+    deck.addEventListener('focusout', function (e) {
+      if (!deck.contains(e.relatedTarget)) leave();
+    });
+    fanned.addEventListener('change', clear);
+  }());
+
+  /* Drop any feed image that fails to load so its placeholder shows
+     through. Once real files exist in assets/work/ this does nothing. */
+  document.querySelectorAll('.post img, .story__face img').forEach(function (img) {
+    img.addEventListener('error', function () { img.remove(); });
+    if (img.complete && img.naturalWidth === 0) img.remove();
+  });
+
+  /* ---------------------------------------------------------------------
+     Fireworks on card hover. Particles live in a fixed overlay rather than
+     inside the card, because the rail scrolls horizontally and would clip
+     anything rising above a card's top edge. Each particle is one WAAPI
+     animation - no canvas, no rAF loop - and removes itself when done.
+     --------------------------------------------------------------------- */
+  (function () {
+    var cards = document.querySelectorAll('.wcard');
+    if (!cards.length) return;
+    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+
+    var COLORS = ['#F9B016', '#FABF43', '#FDD378', '#1A57A7', '#FFF4DE'];
+    var SHAPES = ['', ' fx--square', ' fx--streak'];
+
+    var layer = document.createElement('div');
+    layer.className = 'fx-layer';
+    layer.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(layer);
+
+    var floor  = document.getElementById('workFloor');
+    var work   = document.querySelector('.work');
+    var landed = [];
+    var MAX_LANDED = 240;      // oldest crumbs sweep away past this
+
+    function land(x, color, shape) {
+      if (!floor || !work) return;
+      var crumb = document.createElement('span');
+      crumb.className = 'crumb' + (shape ? ' crumb--' + shape : '');
+      crumb.style.background = color;
+      crumb.style.left = (x - work.getBoundingClientRect().left) + 'px';
+      crumb.style.bottom = (Math.random() * 7) + 'px';     // a shallow pile
+      crumb.style.transform = 'rotate(' + ((Math.random() * 50 - 25) | 0) + 'deg)';
+      crumb.style.opacity = 0.55 + Math.random() * 0.45;
+      floor.appendChild(crumb);
+
+      landed.push(crumb);
+      while (landed.length > MAX_LANDED) landed.shift().remove();
+    }
+
+    function burst(card) {
+      var box    = card.getBoundingClientRect();
+      var floorY = work.getBoundingClientRect().bottom - 8;
+      var originY = box.top + 6;          // just inside the top edge
+      var drop   = Math.max(120, floorY - originY);
+      var count  = 26;
+
+      for (var i = 0; i < count; i++) {
+        var shape = ['', 'square', 'streak'][(Math.random() * 3) | 0];
+        var color = COLORS[(Math.random() * COLORS.length) | 0];
+
+        var p = document.createElement('span');
+        p.className = 'fx' + (shape ? ' fx--' + shape : '');
+        p.style.background = color;
+
+        var startX = box.left + box.width * (0.15 + Math.random() * 0.7);
+        p.style.left = startX + 'px';
+        p.style.top  = originY + 'px';
+        layer.appendChild(p);
+
+        // up and out first, then gravity takes it all the way to the floor
+        var angle = (-90 + (Math.random() * 130 - 65)) * Math.PI / 180;
+        var speed = 60 + Math.random() * 110;
+        var dx    = Math.cos(angle) * speed;
+        var rise  = Math.sin(angle) * speed;
+        var spin  = (Math.random() * 540 - 270) | 0;
+        var life  = 900 + drop * 1.05 + Math.random() * 300;
+
+        var anim = p.animate([
+          { transform: 'translate(0,0) rotate(0deg)', opacity: 1,
+            easing: 'cubic-bezier(.15,.65,.4,1)' },
+          { transform: 'translate(' + dx * 0.55 + 'px,' + rise + 'px) rotate(' + spin * 0.5 + 'deg)',
+            opacity: 1, offset: 0.3, easing: 'cubic-bezier(.5,0,.9,.55)' },
+          { transform: 'translate(' + dx + 'px,' + drop + 'px) rotate(' + spin + 'deg)',
+            opacity: 1 }
+        ], { duration: life, fill: 'forwards' });
+
+        anim.onfinish = (function (el, x, c, sh) {
+          return function () { land(x, c, sh); el.remove(); };
+        }(p, startX + dx, color, shape));
+      }
+    }
+
+    cards.forEach(function (card) {
+      var cooling = false;
+      card.addEventListener('mouseenter', function () {
+        if (cooling) return;            // one burst per hover, not per twitch
+        cooling = true;
+        burst(card);
+        setTimeout(function () { cooling = false; }, 700);
+      });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Work rail arrows. Scrolls by one card plus the gap, measured from the
+     live layout so it stays correct at every breakpoint. The buttons
+     disable at each end rather than wrapping around.
+     --------------------------------------------------------------------- */
+  (function () {
+    var rail = document.getElementById('workRail');
+    var prev = document.getElementById('workPrev');
+    var next = document.getElementById('workNext');
+    if (!rail || !prev || !next) return;
+
+    function step() {
+      var card = rail.querySelector('.wcard');
+      if (!card) return rail.clientWidth;
+      var gap = parseFloat(getComputedStyle(rail).columnGap || 0) || 0;
+      return card.getBoundingClientRect().width + gap;
+    }
+
+    function sync() {
+      var max = rail.scrollWidth - rail.clientWidth;
+      prev.disabled = rail.scrollLeft < 4;
+      next.disabled = rail.scrollLeft > max - 4;
+    }
+
+    prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { rail.scrollBy({ left:  step(), behavior: 'smooth' }); });
+    rail.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  }());
+
+  /* ---------------------------------------------------------------------
+     Types the handwritten note out on load. The finished text is already
+     in the markup, so with JS off (or reduced motion on) it simply reads
+     as normal - the script only replays it character by character.
+     --------------------------------------------------------------------- */
+  (function () {
+    var note = document.querySelector('.hero__note');
+    if (!note) return;
+    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    var text = (note.dataset.typed || note.textContent).replace(/\r/g, '');
+    var i = 0;
+
+    note.textContent = '';
+    note.classList.add('is-typing');
+
+    function tick() {
+      note.textContent = text.slice(0, i);
+      if (i++ < text.length) {
+        var ch = text.charAt(i - 1);
+        // pause a beat at the line break and after commas, like a real hand
+        var wait = ch === '\n' ? 260 : ch === ',' ? 200 : 42 + Math.random() * 55;
+        setTimeout(tick, wait);
+      } else {
+        setTimeout(function () { note.classList.remove('is-typing'); }, 1600);
+      }
+    }
+    setTimeout(tick, 650);   // let the hero settle first
+  }());
+
+  /* ---------------------------------------------------------------------
+     Instagram feed. The upward scroll is a CSS animation that travels
+     exactly half the track, so the track has to hold the post list twice.
+     Cloning the second pass here keeps a single source of truth in the
+     markup - edit a post once and both passes update.
+     --------------------------------------------------------------------- */
+  (function () {
+    var track = document.getElementById('igTrack');
+    if (!track) return;
+
+    track.querySelectorAll('.post').forEach(function (post) {
+      var copy = post.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      var img = copy.querySelector('img');
+      if (img) { img.alt = ''; img.loading = 'lazy'; }
+      track.appendChild(copy);
+    });
+  }());
+  /* ---------------------------------------------------------------------
+     Footer year - so the copyright line never goes stale.
+     --------------------------------------------------------------------- */
+  (function () {
+    var y = document.getElementById('footYear');
+    if (y) y.textContent = new Date().getFullYear();
+  }());
+
+  /* ===================================================================
+     MOTION LAYER (v3). Nine small IIFEs, each one bailing out on its own
+     if the markup it wants isn't there. Everything below is decoration:
+     with this whole block deleted the page still works.
+     =================================================================== */
+
+  var CALM = window.matchMedia('(prefers-reduced-motion:reduce)');
+  var FINE = window.matchMedia('(hover:hover) and (pointer:fine)');
+
+  /* One scroll listener for the whole layer. Handlers run inside a single
+     rAF, so ten effects still cost one layout read per frame. */
+  var onScroll = (function () {
+    var jobs = [], queued = false;
+    function run() {
+      queued = false;
+      var y = window.pageYOffset;
+      for (var i = 0; i < jobs.length; i++) jobs[i](y);
+    }
+    window.addEventListener('scroll', function () {
+      if (!queued) { queued = true; requestAnimationFrame(run); }
+    }, { passive: true });
+    window.addEventListener('resize', run);
+    return function (fn) { jobs.push(fn); fn(window.pageYOffset); };
+  }());
+
+  /* ---------------------------------------------------------------------
+     Scroll progress. A hairline of amber across the very top that fills
+     as the page runs out.
+     --------------------------------------------------------------------- */
+  (function () {
+    var bar = document.createElement('div');
+    bar.className = 'prog';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = '<div class="prog__bar"></div>';
+    document.body.appendChild(bar);
+
+    var fill = bar.firstChild;
+    onScroll(function (y) {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      fill.style.setProperty('--p', max > 0 ? Math.min(1, y / max).toFixed(4) : 0);
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Reveal on scroll. The groups below are marked up in JS rather than in
+     the HTML, so the markup stays clean and the stagger is described in
+     one place: [selector, delay step in ms, direction].
+     --------------------------------------------------------------------- */
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+
+    var GROUPS = [
+      ['.about__note, .about__title, .about__lede, .about__text, .about__cta', 70, ''],
+      ['.about__aside',                                                        0, 'r'],
+      ['.mv__note, .mv__title, .mv__sub',                                     70, ''],
+      ['.mv__card',                                                          110, ''],
+      ['.svc__note, .svc__title, .svc__sub',                                  70, ''],
+      ['.svc__card',                                                          80, ''],
+      ['.work__note, .work__title, .work__sub',                               70, ''],
+      ['.wcard',                                                              70, ''],
+      ['.how__title, .how__note, .how__cta',                                  70, ''],
+      ['.step',                                                               90, ''],
+      ['.ct__note, .ct__title, .ct__lede, .ct__meta',                          70, ''],
+      ['.ct__panel',                                                            0, 'r'],
+      ['.foot__title, .foot__note, .foot__cta',                               70, ''],
+      ['.foot__cols > *',                                                     70, '']
+    ];
+
+    GROUPS.forEach(function (g) {
+      var els = document.querySelectorAll(g[0]);
+      Array.prototype.forEach.call(els, function (el, i) {
+        el.classList.add('rv');
+        if (g[2]) el.classList.add('rv--' + g[2]);
+        if (g[1]) el.style.setProperty('--d', (i * g[1]) + 'ms');
+      });
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);            // it only has to arrive once
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+    document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The headline arrives a word at a time. The sentence is rebuilt from
+     its own text, so nothing has to be marked up by hand.
+     --------------------------------------------------------------------- */
+  (function () {
+    var title = document.querySelector('.hero__title');
+    if (!title) return;
+
+    var words = title.textContent.trim().split(/\s+/);
+    title.textContent = '';
+    words.forEach(function (w, i) {
+      var span = document.createElement('span');
+      span.className = 'word';
+      span.textContent = w;
+      span.style.setProperty('--d', (60 + i * 55) + 'ms');
+      title.appendChild(span);
+      title.appendChild(document.createTextNode(' '));
+    });
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        title.querySelectorAll('.word').forEach(function (w) { w.classList.add('is-in'); });
+      });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     An amber marker stroke under the last word of each section heading -
+     drawn on arrival, in step with the reveal.
+     --------------------------------------------------------------------- */
+  (function () {
+    document.querySelectorAll('.mv__title, .svc__title, .work__title, .ct__title').forEach(function (h) {
+      var parts = h.textContent.trim().split(/\s+/);
+      if (parts.length < 2) return;
+      var last = parts.pop();
+      h.textContent = parts.join(' ') + ' ';
+      var span = document.createElement('span');
+      span.className = 'swipe';
+      span.textContent = last;
+      h.appendChild(span);
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The ticker bands. Same trick the Instagram feed uses: the words are
+     written once and cloned here, so the loop seam stays invisible while
+     the copy lives in exactly one place.
+     --------------------------------------------------------------------- */
+  (function () {
+    document.querySelectorAll('.tick__row').forEach(function (row) {
+      Array.prototype.slice.call(row.children).forEach(function (kid) {
+        var copy = kid.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        row.appendChild(copy);
+      });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The nav dock. Built from the hero's own menu, so the links are never
+     maintained twice, and it marks which section you are standing in.
+     --------------------------------------------------------------------- */
+  (function () {
+    var menu = document.querySelector('.nav__menu');
+    var hero = document.querySelector('.hero');
+    if (!menu || !hero) return;
+
+    var dock = document.createElement('nav');
+    dock.className = 'dock';
+    dock.setAttribute('aria-label', 'Section navigation');
+
+    var mark = document.createElement('a');
+    mark.className = 'dock__mark';
+    mark.href = '#';
+    mark.setAttribute('aria-label', 'Back to top');
+    mark.textContent = 'b';
+    dock.appendChild(mark);
+
+    var targets = [];
+    menu.querySelectorAll('.nav__link').forEach(function (a) {
+      var link = document.createElement('a');
+      link.className = 'dock__link';
+      link.href = a.getAttribute('href');
+      link.textContent = a.textContent;
+      dock.appendChild(link);
+
+      var section = document.querySelector(link.getAttribute('href'));
+      if (section) targets.push({ link: link, el: section });
+    });
+
+    var cta = menu.querySelector('.nav__cta');
+    if (cta) {
+      var b = document.createElement('a');
+      b.className = 'dock__cta';
+      b.href = cta.getAttribute('href');
+      b.textContent = 'Let’s talk';
+      dock.appendChild(b);
+    }
+    document.body.appendChild(dock);
+
+    onScroll(function (y) {
+      dock.classList.toggle('is-up', y > hero.offsetHeight - 120);
+
+      var here = null, line = y + window.innerHeight * 0.35;
+      targets.forEach(function (t) {
+        if (t.el.offsetTop <= line) here = t;
+      });
+      targets.forEach(function (t) { t.link.classList.toggle('is-here', t === here); });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The trail ring. Runs a beat behind the pointer, swells over anything
+     clickable, and flips colour over the amber hero and the navy footer
+     so it never disappears into the ground it is sitting on.
+     --------------------------------------------------------------------- */
+  (function () {
+    if (CALM.matches || !FINE.matches) return;
+
+    var ring = document.createElement('div');
+    ring.className = 'ring';
+    ring.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(ring);
+
+    var tx = 0, ty = 0, x = 0, y = 0, running = false;
+
+    function frame() {
+      x += (tx - x) * 0.18;              // the lag - lower is lazier
+      y += (ty - y) * 0.18;
+      ring.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+      if (Math.abs(tx - x) > 0.4 || Math.abs(ty - y) > 0.4) requestAnimationFrame(frame);
+      else running = false;
+    }
+
+    var HOT = 'a,button,.svc__card,.mv__card,.wcard,.step,.post,.nav__link,.social';
+    document.addEventListener('pointermove', function (e) {
+      tx = e.clientX; ty = e.clientY;
+      if (!ring.classList.contains('is-on')) ring.classList.add('is-on');
+      if (!running) { running = true; requestAnimationFrame(frame); }
+
+      var over = e.target;
+      ring.classList.toggle('is-hot', !!(over.closest && over.closest(HOT)));
+      ring.classList.toggle('is-dark', !!(over.closest && over.closest('.foot')));
+    }, { passive: true });
+
+    document.documentElement.addEventListener('pointerleave', function () {
+      ring.classList.remove('is-on');
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Magnetic buttons. The button leans toward the pointer while it is
+     near, then springs back on the transition the button already had.
+     --------------------------------------------------------------------- */
+  (function () {
+    if (CALM.matches || !FINE.matches) return;
+
+    var PULL = 0.32, CAP = 12;
+    document.querySelectorAll('.hero__btn, .about__cta, .how__cta, .foot__cta, .nav__cta, .work__btn, .dock__cta, .ct__send')
+      .forEach(function (el) {
+        el.addEventListener('pointermove', function (e) {
+          var b = el.getBoundingClientRect();
+          var dx = Math.max(-CAP, Math.min(CAP, (e.clientX - (b.left + b.width / 2)) * PULL));
+          var dy = Math.max(-CAP, Math.min(CAP, (e.clientY - (b.top + b.height / 2)) * PULL));
+          el.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + (dy - 2).toFixed(1) + 'px)';
+        });
+        el.addEventListener('pointerleave', function () { el.style.transform = ''; });
+      });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Card tilt. The card leans away from the pointer and a soft light
+     follows it across the face. Written to inline transform so it beats
+     the hover rule outright rather than racing it.
+     --------------------------------------------------------------------- */
+  (function () {
+    if (CALM.matches || !FINE.matches) return;
+
+    document.querySelectorAll('.svc__card, .mv__card').forEach(function (card) {
+      card.addEventListener('pointerenter', function () {
+        card.style.transition = 'transform .12s ease';
+      });
+      card.addEventListener('pointermove', function (e) {
+        var b = card.getBoundingClientRect();
+        var px = (e.clientX - b.left) / b.width;
+        var py = (e.clientY - b.top) / b.height;
+        card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+        card.style.transform =
+          'perspective(900px) rotateX(' + ((0.5 - py) * 7).toFixed(2) + 'deg)' +
+          ' rotateY(' + ((px - 0.5) * 8).toFixed(2) + 'deg)' +
+          ' translateY(-8px) scale(1.015)';
+      });
+      card.addEventListener('pointerleave', function () {
+        card.style.transition = '';        // hand the settle back to CSS
+        card.style.transform = '';
+      });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The stat counters run up once, the first time they are seen. The
+     final figures are already in the markup, so they read correctly with
+     JS off or reduced motion on - this only replays the climb.
+     --------------------------------------------------------------------- */
+  (function () {
+    var nums = document.querySelectorAll('.about__stats b');
+    if (!nums.length || !('IntersectionObserver' in window) || CALM.matches) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+
+        var el     = e.target;
+        var full   = el.textContent.trim();
+        var target = parseFloat(full.replace(/[^\d.]/g, ''));
+        var suffix = full.replace(/[\d.,\s]/g, '');
+        if (!isFinite(target)) return;
+
+        var t0 = 0, DUR = 1100;
+        function step(t) {
+          if (!t0) t0 = t;
+          var k = Math.min(1, (t - t0) / DUR);
+          var eased = 1 - Math.pow(1 - k, 3);
+          el.textContent = Math.round(target * eased) + (k === 1 ? suffix : '');
+          if (k < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.6 });
+
+    nums.forEach(function (n) { io.observe(n); });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Parallax, kept deliberately small - the hills drift under the hero
+     copy and the about panel lags a touch behind its own column.
+     --------------------------------------------------------------------- */
+  (function () {
+    if (CALM.matches) return;
+
+    var LAYERS = [
+      ['.hero__waves',  0.16],
+      ['.about__aside', -0.05],
+      ['.svc__head',    -0.03]
+    ];
+
+    var items = [];
+    LAYERS.forEach(function (l) {
+      var el = document.querySelector(l[0]);
+      if (el) items.push({ el: el, k: l[1], mid: 0 });
+    });
+    if (!items.length) return;
+
+    /* Offsets are measured from each layer's own centre, so every layer
+       sits at zero when it is centred in the viewport - nothing starts
+       the page already shoved out of place. */
+    function measure() {
+      items.forEach(function (it) {
+        var b = it.el.getBoundingClientRect();
+        it.mid = b.top + window.pageYOffset + b.height / 2;
+      });
+    }
+    measure();
+    window.addEventListener('resize', measure);
+
+    onScroll(function (y) {
+      items.forEach(function (it) {
+        var d = (y + window.innerHeight / 2 - it.mid) * it.k;
+        it.el.style.transform = 'translate3d(0,' + Math.max(-140, Math.min(140, d)).toFixed(1) + 'px,0)';
+      });
+    });
+  }());
+
+  /* ---------------------------------------------------------------------
+     The contact form. With no endpoint set it refuses to pretend: it
+     stops the submit and says where to write instead, rather than show a
+     thank-you for a message that went nowhere. Fill in data-endpoint on
+     the form and this module steps aside on load.
+     --------------------------------------------------------------------- */
+  (function () {
+    var form = document.getElementById('ctForm');
+    var msg  = document.getElementById('ctMsg');
+    if (!form || !msg) return;
+
+    if (form.dataset.endpoint) {          // wired up - let the browser post it
+      form.action = form.dataset.endpoint;
+      return;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (form.elements.website.value) return;   // honeypot: drop it quietly
+
+      msg.hidden = false;
+      msg.textContent = 'This form has nowhere to post yet. Email hello@blue.agency or call '
+                      + '+00 000 000 0000 and it reaches the same people.';
+      msg.scrollIntoView({ block: 'nearest', behavior: CALM.matches ? 'auto' : 'smooth' });
+    });
+  }());
+</script>
+
+</body>
+</html>
