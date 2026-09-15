@@ -31,24 +31,7 @@ for (let m; (m = block.exec(src)); ) {
 parts.push({ html: src.slice(last) });
 
 // HTML comments only outside the blocks above
-let out = parts.map(p => p.raw ?? p.html.replace(/<!--[\s\S]*?-->\n?/g, '')).join('');
-
-// Poppins is embedded in the page rather than fetched. Loaded as separate
-// files - even preloaded - Chrome paints the hero text in the fallback font,
-// swaps to Poppins, and records neither paint as the Largest Contentful
-// Paint, so PageSpeed reports LCP (and the whole Performance score) as an
-// error. With the four weights already in the page, the first paint of the
-// headline is in Poppins and is recorded. Caveat only draws the handwritten
-// notes, so it stays a normal file.
-const fontDir = new URL('./assets/fonts/', import.meta.url);
-for (const weight of [400, 500, 600, 800]) {
-  const file = `poppins-${weight}.woff2`;
-  const b64 = (await readFile(new URL(file, fontDir))).toString('base64');
-  const ref = `url(assets/fonts/${file})`;
-  if (!out.includes(ref)) throw new Error(`build: ${ref} not found in the CSS`);
-  out = out.replace(ref, `url(data:font/woff2;base64,${b64})`);
-  out = out.replace(new RegExp(`<link rel="preload" href="assets/fonts/${file}"[^>]*>\\n?`), '');
-}
+const out = parts.map(p => p.raw ?? p.html.replace(/<!--[\s\S]*?-->\n?/g, '')).join('');
 
 await writeFile(OUT, out);
 console.log(`index.html  ${(src.length / 1024).toFixed(1)} KB -> ${(out.length / 1024).toFixed(1)} KB`);
