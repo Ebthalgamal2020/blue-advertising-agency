@@ -50,7 +50,10 @@
   }
   body{
     margin:0;
+    /* clip, not hidden: hidden turns body into a scroll container that
+       never scrolls, and the sticky service cards would stop sticking */
     overflow-x:hidden;
+    overflow-x:clip;
     width:100%;
     font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
     color:var(--ink);
@@ -691,6 +694,144 @@
     .wave, .wave path{ animation:none; }
   }
 
+  /* ============================================== digital | printing */
+  /* Straight after the hero, the two disciplines the stand work sits
+     beside. A navy half and an amber half - the same two-colour split
+     the mission cards use - each carrying three pieces of real work
+     from the previous blue site's archive.                            */
+  .duo{
+    position:relative;
+    padding:clamp(40px,7vh,90px) clamp(16px,3vw,44px) clamp(10px,2vh,24px);
+    background:var(--white);
+  }
+  .duo__inner{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(16px,2vw,32px);
+    max-width:1500px;
+    margin:0 auto;
+  }
+  .duo__half{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    padding:clamp(26px,3vw,52px);
+    border-radius:clamp(24px,2.6vw,40px);
+    background:var(--d-bg);
+    color:var(--d-fg);
+    overflow:hidden;
+    isolation:isolate;
+    box-shadow:0 30px 60px -34px rgba(14,49,97,.55);
+  }
+  /* the soft blob the warm panels carry, tinted per half */
+  .duo__half::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:-30%;
+    right:-22%;
+    width:62%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:var(--d-blob);
+  }
+  .duo__half--digital{ --d-bg:var(--navy);  --d-fg:var(--amber-050); --d-accent:var(--amber); --d-pill:rgba(255,255,255,.16); --d-blob:rgba(26,87,167,.55); }
+  .duo__half--print  { --d-bg:var(--amber); --d-fg:var(--navy-700);  --d-accent:var(--navy);  --d-pill:rgba(14,49,97,.13);   --d-blob:rgba(253,211,120,.75); }
+
+  .duo__note{
+    margin:0;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--d-accent);
+    transform:rotate(-3deg);
+    transform-origin:left center;
+  }
+  .duo__title{
+    margin:clamp(6px,1vh,10px) 0 0;
+    font-size:clamp(30px,3.6vw,56px);
+    font-weight:800;
+    line-height:1.02;
+    letter-spacing:-.035em;
+  }
+  .duo__text{
+    margin:clamp(12px,1.8vh,18px) 0 0;
+    max-width:40ch;
+    font-size:clamp(14px,1.05vw,16.5px);
+    font-weight:500;
+    line-height:1.55;
+    opacity:.9;
+  }
+  .duo__tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin:clamp(16px,2.2vh,22px) 0 clamp(22px,3.4vh,36px);
+    padding:0;
+    list-style:none;
+  }
+  .duo__tags li{
+    padding:5px 12px 6px;
+    border-radius:999px;
+    background:var(--d-pill);
+    font-size:12px;
+    font-weight:600;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+
+  /* three pieces of work, dealt onto the panel slightly askew */
+  .duo__work{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(10px,1.2vw,18px);
+    margin:auto 0 0;
+    padding:0;
+    list-style:none;
+  }
+  .duo__work li{
+    aspect-ratio:1;
+    border-radius:clamp(12px,1.2vw,18px);
+    overflow:hidden;
+    background:rgba(0,0,0,.12);
+    box-shadow:0 18px 30px -18px rgba(0,0,0,.55);
+    rotate:var(--tip,0deg);
+    transition:rotate .35s cubic-bezier(.22,.68,.24,1), transform .35s cubic-bezier(.22,.68,.24,1);
+  }
+  .duo__work li:nth-child(1){ --tip:-3deg; }
+  .duo__work li:nth-child(2){ --tip:1.5deg; }
+  .duo__work li:nth-child(3){ --tip:-1.5deg; }
+  .duo__work li:hover{ rotate:0deg; transform:translateY(-6px) scale(1.04); }
+  .duo__work img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  .duo__cta{
+    align-self:flex-start;
+    display:inline-flex;
+    align-items:center;
+    gap:22px;
+    margin-top:clamp(22px,3.4vh,34px);
+    height:52px;
+    padding:0 7px 0 24px;
+    border-radius:10px;
+    background:var(--d-accent);
+    color:var(--d-bg);
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.6);
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .duo__cta:hover{ transform:translateY(-2px); filter:brightness(1.08); }
+  .duo__cta .arrow{ width:38px; height:38px; border-radius:8px; background:rgba(255,255,255,.22); }
+  .duo__half--digital .duo__cta .arrow{ background:rgba(14,49,97,.14); }
+
+  @media (max-width:900px){
+    .duo__inner{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .duo__work li{ transition:none; }
+  }
+
   /* ====================================================== who we are */
   /* White ground, so it reads as a breath after the amber hero. The
      copy sits left, a single amber panel holds the glyph and the
@@ -989,13 +1130,21 @@
   }
 
   /* ======================================================== services */
-  /* A plain grid rather than the fanned deck - the process cards
-     already own that trick, and six tiles need to stay readable.
+  /* The card stack from the previous blue site's "What we offer": every
+     card is pinned at the same height, the next one rises into the frame
+     and the one before it is dealt away to alternating sides. The cards
+     themselves - colourways, icons, copy - are this site's own.
+     Below 901px the stack stands down and the tiles fall back to a plain
+     grid, the way the old site fell back to a list on a phone.
      Colourways are the wcard set, so the two sections rhyme. */
   .svc{
+    --stick:clamp(80px,11vh,108px);   /* clears the floating nav dock */
     position:relative;
     padding:clamp(54px,9vh,108px) clamp(16px,3vw,44px) clamp(44px,7vh,88px);
     background:var(--white);
+    /* dealt cards travel well past the edge. clip, not hidden - hidden
+       would make this a scroll container and the cards would unstick */
+    overflow-x:clip;
   }
   .svc__head{
     position:relative;
@@ -1029,9 +1178,9 @@
     opacity:.8;
   }
 
-  .svc__grid{
+  .svc__stack{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(2,1fr);
     gap:clamp(14px,1.5vw,26px);
     max-width:1500px;
     margin:0 auto;
@@ -1084,11 +1233,107 @@
     opacity:.7;
   }
 
-  @media (max-width:1000px){
-    .svc__grid{ grid-template-columns:repeat(2,1fr); }
+  /* progress rail - fixed to the viewport gutter, not carried by a card,
+     because it has to hold still while the cards move past it */
+  .svc__rail{
+    position:fixed;
+    z-index:40;
+    right:clamp(10px,1.6vw,26px);
+    top:50%;
+    translate:0 -50%;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .5s ease;
+  }
+  .svc__rail.is-on{ opacity:1; }
+  .svc__rail i{
+    display:block;
+    width:4px;
+    height:22px;
+    border-radius:99px;
+    background:rgba(20,66,127,.22);
+    transition:background-color .45s ease, height .45s cubic-bezier(.16,1,.3,1);
+  }
+  .svc__rail i.is-on{ height:44px; background:var(--amber); }
+
+  @media (min-width:901px){
+    .svc__stack{ display:block; max-width:none; }
+
+    /* The holder is what sticks. It is never transformed, so reading its
+       position back each frame is honest - transform it and the motion
+       ends up measuring, and so driving, itself. */
+    .svc__holder{
+      position:sticky;
+      top:var(--stick);
+      width:min(1180px,90vw);
+      height:clamp(460px,calc(100vh - var(--stick) - 36px),780px);
+      margin:0 auto 22vh;
+    }
+    .svc__holder:last-child{ margin-bottom:6vh; }
+
+    /* the mover carries the scroll motion; the card inside keeps its own
+       hover lift and pointer tilt, so the two never fight over transform */
+    .svc__mover{
+      position:absolute;
+      inset:0;
+      transform-origin:50% 50%;
+      will-change:transform;
+      backface-visibility:hidden;
+    }
+
+    /* the same card, at stage size: copy down the left, the icon given a
+       panel of its own on the right */
+    .svc__card{
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+      grid-template-rows:auto 1fr auto auto;
+      grid-template-areas:"num ico" ". ico" "ttl ico" "text ico";
+      column-gap:clamp(28px,4vw,72px);
+      height:100%;
+      min-height:0;
+      padding:clamp(30px,4vw,64px);
+      border-radius:clamp(24px,2.6vw,40px);
+      box-shadow:0 40px 90px -34px rgba(14,49,97,.5);
+    }
+    .svc__card:hover{ box-shadow:0 50px 100px -34px rgba(14,49,97,.58); }
+    .svc__ico{
+      grid-area:ico;
+      width:auto;
+      height:auto;
+      border-radius:clamp(18px,2vw,30px);
+    }
+    .svc__ico svg{ width:clamp(120px,15vw,220px); height:auto; }
+    .svc__num{
+      grid-area:num;
+      margin:0;
+      padding:0;
+      font-size:clamp(46px,5.4vw,88px);
+      line-height:.8;
+      opacity:.55;
+    }
+    .svc__ttl{
+      grid-area:ttl;
+      margin:0;
+      font-size:clamp(34px,4.4vw,70px);
+      line-height:.98;
+      letter-spacing:-.04em;
+    }
+    .svc__text{
+      grid-area:text;
+      margin:clamp(14px,2vh,22px) 0 0;
+      max-width:34ch;
+      font-size:clamp(15px,1.2vw,18.5px);
+      line-height:1.6;
+    }
+  }
+  @media (max-width:900px){
+    .svc__rail{ display:none; }
   }
   @media (max-width:620px){
-    .svc__grid{ grid-template-columns:1fr; }
+    .svc__stack{ grid-template-columns:1fr; }
     .svc__card{ min-height:0; }
   }
 
@@ -1302,6 +1547,164 @@
     .work__note{ position:static; margin:0 0 14px; transform:rotate(-3deg); max-width:none; text-align:center; }
     .work__nav{ justify-content:center; }
     .wcard{ flex-basis:74vw; }
+  }
+
+  /* ========================================================= clients */
+  /* The wheel from the previous blue site, re-set on this page's white
+     ground. Quiet marks are flat navy silhouettes; the one riding over
+     the top comes up in full colour under a warm lamp, read against an
+     amber tick. The dial's diameter is set in viewport widths, so the
+     visible arc is the same shape on any screen - about seven marks. */
+  .cl{
+    position:relative;
+    overflow:hidden;
+    padding:clamp(48px,8vh,96px) 0 0;
+    background:var(--white);
+  }
+  .cl__head{
+    position:relative;
+    z-index:3;
+    max-width:1500px;
+    margin:0 auto;
+    padding:0 clamp(16px,3vw,44px);
+    text-align:center;
+  }
+  .cl__note{
+    margin:0 0 10px;
+    font-family:"Caveat",cursive;
+    font-size:clamp(19px,1.6vw,26px);
+    line-height:1.15;
+    color:var(--navy);
+    transform:rotate(-2deg);
+  }
+  .cl__title{
+    margin:0;
+    font-size:clamp(32px,4.6vw,66px);
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.035em;
+    color:var(--navy);
+  }
+  .cl__sub{
+    margin:16px auto 0;
+    max-width:44ch;
+    font-size:clamp(14px,1.05vw,17px);
+    font-weight:500;
+    line-height:1.5;
+    color:var(--navy-700);
+    opacity:.8;
+  }
+
+  .cl__stage{
+    --top:40%;                        /* where the top of the wheel rides */
+    position:relative;
+    height:clamp(340px,36vw,540px);
+    /* the arc runs off both edges - let it fade out rather than cut */
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+            mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  }
+  /* ...and down into the section below */
+  .cl__stage::after{
+    content:"";
+    position:absolute;
+    z-index:2;
+    inset:auto 0 0 0;
+    height:34%;
+    background:linear-gradient(to top,var(--white),rgba(255,255,255,0));
+    pointer-events:none;
+  }
+  /* light gathered at the top of the wheel, where the reading happens */
+  .cl__lamp{
+    position:absolute;
+    left:50%;
+    top:var(--top);
+    width:min(86vw,1000px);
+    height:90%;
+    translate:-50% -50%;
+    background:radial-gradient(ellipse at center,var(--amber-050) 0%,rgba(255,244,222,0) 64%);
+    pointer-events:none;
+  }
+  .cl__dial{
+    position:absolute;
+    z-index:1;
+    left:50%;
+    top:var(--top);
+    width:clamp(1500px,212vw,3600px);
+    aspect-ratio:1;
+    translate:-50% 0;
+    pointer-events:none;
+  }
+  /* each mark is a slot rotated about the circle's centre */
+  .cl__slot{
+    position:absolute;
+    left:50%;
+    top:0;
+    width:0;
+    height:100%;
+    will-change:transform;
+  }
+  .cl__mark{
+    position:absolute;
+    left:0;
+    top:0;
+    width:clamp(104px,10.4vw,154px);
+    height:clamp(56px,5.8vw,86px);
+    translate:-50% -50%;
+    will-change:transform;
+  }
+  .cl__mark img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+  /* quiet: a flat navy silhouette, the way a name looks before it is read */
+  .cl__mark .q{
+    filter:brightness(0) saturate(100%) invert(19%) sepia(46%) saturate(1673%)
+           hue-rotate(197deg) brightness(94%) contrast(92%);
+    opacity:.26;
+  }
+  .cl__mark .c{ opacity:0; }
+
+  /* the index mark the wheel is read against */
+  .cl__tick{
+    position:absolute;
+    z-index:3;
+    left:50%;
+    top:calc(var(--top) - clamp(76px,7vw,104px));
+    width:3px;
+    height:clamp(18px,2vw,28px);
+    border-radius:3px;
+    translate:-50% 0;
+    background:linear-gradient(180deg,rgba(249,176,22,0),var(--amber));
+  }
+  .cl__idx{
+    position:absolute;
+    z-index:3;
+    left:0;
+    right:0;
+    top:calc(var(--top) + clamp(58px,5.6vw,86px));
+    margin:0;
+    text-align:center;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.24em;
+    color:rgba(14,49,97,.55);
+  }
+  .cl__idx span{
+    font-size:18px;
+    font-weight:800;
+    letter-spacing:.04em;
+    color:var(--amber-600);
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* the wheel is decoration; the names are read from this list instead */
+  .cl__names{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
   }
 
   /* ====================================================== how it works */
@@ -2507,6 +2910,58 @@
 </section>
 
 
+<!-- ============================================ digital | printing === -->
+<!-- The body copy, the tags and all six images come from the previous
+     blue site (blue/index.html, "What we offer" cards 02 and 05, and its
+     project archive in blue/assets/v5). PLACEHOLDER COPY - the
+     handwritten notes and the button labels are stand-ins. -->
+<section class="duo" id="digital-print" aria-label="Digital marketing and printing">
+  <div class="duo__inner">
+
+    <article class="duo__half duo__half--digital">
+      <p class="duo__note">posted, boosted, measured</p>
+      <h2 class="duo__title">Digital marketing</h2>
+      <p class="duo__text">Channels run properly - the content, the campaigns behind it, and the
+        reporting that says whether any of it worked.</p>
+      <ul class="duo__tags">
+        <li>Social media</li><li>Content</li><li>Paid campaigns</li><li>Reporting</li>
+      </ul>
+      <ul class="duo__work">
+        <li><img src="assets/digital/01.jpg" alt="Social media posts designed for an electronics retailer" loading="lazy" width="360" height="360"></li>
+        <li><img src="assets/digital/02.jpg" alt="Social media campaign posts for a snack brand" loading="lazy" width="360" height="360"></li>
+        <li><img src="assets/digital/03.jpg" alt="Social media posts for a furniture retailer" loading="lazy" width="360" height="360"></li>
+      </ul>
+      <a class="duo__cta" href="#contact">Plan a campaign
+        <span class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </article>
+
+    <article class="duo__half duo__half--print">
+      <p class="duo__note">the part people keep</p>
+      <h2 class="duo__title">Printing</h2>
+      <p class="duo__text">Printed material is usually the first thing a client actually holds. We
+        take it from artwork through press and finishing.</p>
+      <ul class="duo__tags">
+        <li>Offset &amp; digital</li><li>Indoor</li><li>Outdoor</li><li>Giveaways</li>
+      </ul>
+      <ul class="duo__work">
+        <li><img src="assets/print/01.jpg" alt="Press proof sheet with colour bars under a loupe" loading="lazy" width="360" height="360"></li>
+        <li><img src="assets/print/02.jpg" alt="Printed roll-up banners, flags and flyers for Master Gas" loading="lazy" width="360" height="360"></li>
+        <li><img src="assets/print/03.jpg" alt="Printed spiral notebooks for Lipton" loading="lazy" width="360" height="360"></li>
+      </ul>
+      <a class="duo__cta" href="#contact">Get a print quote
+        <span class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </article>
+
+  </div>
+</section>
+
+
 <!-- ===================================================== who we are === -->
 <!-- PLACEHOLDER COPY - the story and the numbers are stand-ins. -->
 <section class="about" id="about">
@@ -2672,8 +3127,15 @@
       only the part you are missing.</p>
   </div>
 
-  <div class="svc__grid">
+  <div class="svc__rail" id="svcRail" aria-hidden="true">
+    <i class="is-on"></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
 
+  <!-- each card sits in a sticky holder (read, never moved) and a mover
+       (moved by the stack script); the card itself is unchanged -->
+  <div class="svc__stack" id="svcStack">
+
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--navy">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2685,7 +3147,9 @@
         built, shipped and installed.</p>
       <p class="svc__num">01</p>
     </article>
+    </div></div>
 
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--amber">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2697,7 +3161,9 @@
         floor and still look like one idea.</p>
       <p class="svc__num">02</p>
     </article>
+    </div></div>
 
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--blue">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2709,7 +3175,9 @@
         nights - built to camera as well as to the room.</p>
       <p class="svc__num">03</p>
     </article>
+    </div></div>
 
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--gold">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2721,7 +3189,9 @@
         long before the first panel is cut.</p>
       <p class="svc__num">04</p>
     </article>
+    </div></div>
 
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--deep">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2734,7 +3204,9 @@
         colour-matched in one pass.</p>
       <p class="svc__num">05</p>
     </article>
+    </div></div>
 
+    <div class="svc__holder"><div class="svc__mover">
     <article class="svc__card wcard--amber">
       <div class="svc__ico">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2747,6 +3219,7 @@
         stays for the whole show.</p>
       <p class="svc__num">06</p>
     </article>
+    </div></div>
 
   </div>
 </section>
@@ -2818,6 +3291,38 @@
         <p class="wcard__text">Short line on the brief and what we built - replace with the real project copy.</p>
       </article>
   </div>
+</section>
+
+<!-- ======================================================= clients === -->
+<!-- The wheel from the previous blue site. The 44 logos are copied from
+     blue/assets/v5/clients (k00-k43, in this order) and the names in the
+     list are the ones that site gave them. The wheel is built by script;
+     screen readers get the plain list instead. -->
+<section class="cl" id="clients">
+  <div class="cl__head">
+    <p class="cl__note">trusted by</p>
+    <h2 class="cl__title">Names you already know</h2>
+    <p class="cl__sub">Forty-four brands the blue team has worked with.</p>
+  </div>
+
+  <div class="cl__stage" aria-hidden="true">
+    <div class="cl__lamp"></div>
+    <div class="cl__dial" id="clDial"></div>
+    <div class="cl__tick"></div>
+    <p class="cl__idx"><span id="clNum">01</span> / 44</p>
+  </div>
+
+  <ul class="cl__names">
+    <li>Lipton</li><li>Moussy</li><li>NIVEA</li><li>Dreem</li><li>Sunshine</li><li>Merck</li>
+    <li>Concept</li><li>Haier</li><li>GE Appliances</li><li>AXE</li><li>Labanita</li>
+    <li>Ashan Ya Baladi</li><li>Almarasem</li><li>Master Gas</li><li>Green Cola</li>
+    <li>Panasonic</li><li>METRO</li><li>Arab League</li><li>Sunlight</li><li>Brouq</li>
+    <li>NBS</li><li>Cafe Najjar</li><li>Halwani Bros</li><li>Ayat</li><li>Egypt Builders</li>
+    <li>XS79</li><li>Motaweroon</li><li>Nile City</li><li>Ettonic</li><li>Sunny</li>
+    <li>Helmy</li><li>Ingram Micro</li><li>Deer</li><li>Matrouh University</li><li>LUX</li>
+    <li>Build Up</li><li>Cairo Pentathlon</li><li>Molped</li><li>Hayat</li><li>Chloride</li>
+    <li>El-Ofoq</li><li>Aqar Masr</li><li>Uber</li><li>Careem</li>
+  </ul>
 </section>
 
 <!-- ================================================ how it works ==== -->
@@ -3454,14 +3959,19 @@
     if (!('IntersectionObserver' in window)) return;
 
     var GROUPS = [
+      ['.duo__half',                                                          120, ''],
       ['.about__note, .about__title, .about__lede, .about__text, .about__cta', 70, ''],
       ['.about__aside',                                                        0, 'r'],
       ['.mv__note, .mv__title, .mv__sub',                                     70, ''],
       ['.mv__card',                                                          110, ''],
       ['.svc__note, .svc__title, .svc__sub',                                  70, ''],
-      ['.svc__card',                                                          80, ''],
+      // no stagger: in the stack each card arrives on its own scroll, and a
+      // sixth card waiting 400ms to fade in would read as lag
+      ['.svc__card',                                                           0, ''],
       ['.work__note, .work__title, .work__sub',                               70, ''],
       ['.wcard',                                                              70, ''],
+      ['.cl__note, .cl__title, .cl__sub',                                     70, ''],
+      ['.cl__stage',                                                           0, ''],
       ['.how__title, .how__note, .how__cta',                                  70, ''],
       ['.step',                                                               90, ''],
       ['.ct__note, .ct__title, .ct__lede, .ct__meta',                          70, ''],
@@ -3521,7 +4031,7 @@
      drawn on arrival, in step with the reveal.
      --------------------------------------------------------------------- */
   (function () {
-    document.querySelectorAll('.mv__title, .svc__title, .work__title, .ct__title').forEach(function (h) {
+    document.querySelectorAll('.mv__title, .svc__title, .work__title, .cl__title, .ct__title').forEach(function (h) {
       var parts = h.textContent.trim().split(/\s+/);
       if (parts.length < 2) return;
       var last = parts.pop();
@@ -3624,7 +4134,7 @@
       else running = false;
     }
 
-    var HOT = 'a,button,.svc__card,.mv__card,.wcard,.step,.post,.nav__link,.social';
+    var HOT = 'a,button,.svc__card,.mv__card,.wcard,.step,.post,.duo__work li,.nav__link,.social';
     document.addEventListener('pointermove', function (e) {
       tx = e.clientX; ty = e.clientY;
       if (!ring.classList.contains('is-on')) ring.classList.add('is-on');
@@ -3648,7 +4158,7 @@
     if (CALM.matches || !FINE.matches) return;
 
     var PULL = 0.32, CAP = 12;
-    document.querySelectorAll('.hero__btn, .about__cta, .how__cta, .foot__cta, .nav__cta, .work__btn, .dock__cta, .ct__send')
+    document.querySelectorAll('.hero__btn, .duo__cta, .about__cta, .how__cta, .foot__cta, .nav__cta, .work__btn, .dock__cta, .ct__send')
       .forEach(function (el) {
         el.addEventListener('pointermove', function (e) {
           var b = el.getBoundingClientRect();
@@ -3676,11 +4186,12 @@
         var b = card.getBoundingClientRect();
         var px = (e.clientX - b.left) / b.width;
         var py = (e.clientY - b.top) / b.height;
+        var k  = Math.min(1, 460 / b.width);   // a stage-sized card leans less than a tile
         card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
         card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
         card.style.transform =
-          'perspective(900px) rotateX(' + ((0.5 - py) * 7).toFixed(2) + 'deg)' +
-          ' rotateY(' + ((px - 0.5) * 8).toFixed(2) + 'deg)' +
+          'perspective(900px) rotateX(' + ((0.5 - py) * 7 * k).toFixed(2) + 'deg)' +
+          ' rotateY(' + ((px - 0.5) * 8 * k).toFixed(2) + 'deg)' +
           ' translateY(-8px) scale(1.015)';
       });
       card.addEventListener('pointerleave', function () {
@@ -3763,6 +4274,168 @@
         it.el.style.transform = 'translate3d(0,' + Math.max(-140, Math.min(140, d)).toFixed(1) + 'px,0)';
       });
     });
+  }());
+
+  /* ---------------------------------------------------------------------
+     Services card stack. The movement is the previous blue site's "What
+     we offer" deck, run off this layer's scroll hook. Two motions from
+     the same reading:
+       entry - a card still below the pin line is pulled up from under
+               the frame, a touch small, and settles as it locks;
+       exit  - once the next card starts locking, the current one is
+               dealt away to alternating sides, rotating and shrinking,
+               and keeps going while the card after that arrives too.
+     Plain smoothstep curves off real geometry, so it stays right at any
+     card height or viewport. Only the mover is transformed: the sticky
+     holder is what gets measured, and the card keeps its own tilt.
+     --------------------------------------------------------------------- */
+  (function () {
+    var stack = document.getElementById('svcStack');
+    if (!stack) return;
+
+    var holders = Array.prototype.slice.call(stack.querySelectorAll('.svc__holder'));
+    var movers  = holders.map(function (h) { return h.querySelector('.svc__mover'); });
+    var rail    = document.getElementById('svcRail');
+    var dots    = rail ? Array.prototype.slice.call(rail.children) : [];
+    var WIDE    = window.matchMedia('(min-width:901px)');
+    var N = holders.length, at = -1, flat = false;
+    if (!N) return;
+
+    function c01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function smooth(t) { return t * t * (3 - 2 * t); }
+
+    function drive() {
+      if (!WIDE.matches) {
+        if (!flat) {                  // hand the tiles back to the grid, once
+          flat = true;
+          movers.forEach(function (m) { m.style.transform = ''; });
+        }
+        return;
+      }
+      flat = false;
+
+      var vh     = document.documentElement.clientHeight;
+      var W      = document.documentElement.clientWidth;
+      var stick  = parseFloat(getComputedStyle(holders[0]).top) || 90;
+      var travel = Math.max(1, vh - stick);
+      var enter  = Math.min(travel, 560);         // the window a card rises over
+      var top    = holders.map(function (h) { return h.getBoundingClientRect().top; });
+      var active = 0;
+
+      // the rail is fixed to the viewport, so it is told when the deck is the
+      // thing on screen: from the first card reaching the middle until the
+      // last one has scrolled past it
+      if (rail) {
+        var last = holders[N - 1].getBoundingClientRect().bottom;
+        rail.classList.toggle('is-on', top[0] < vh * 0.6 && last > vh * 0.5);
+      }
+
+      for (var i = 0; i < N; i++) {
+        var next = i + 1 < N ? c01(1 - (top[i + 1] - stick) / travel) : 0;
+        if (next >= 0.5) active = i + 1;
+        if (CALM.matches) continue;               // cards still pile, they just don't fly
+
+        // entry: 1 = still waiting below, 0 = locked. No fade - it arrives solid.
+        var ei = smooth(c01((top[i] - stick) / enter));
+
+        // exit: two terms, so a card keeps travelling while the next one locks too
+        var ex = next;
+        if (i + 2 < N) ex += c01(1 - (top[i + 2] - stick) / travel);
+        var e2 = smooth(c01(ex)), e3 = c01(ex - 1);
+        var side = i % 2 ? 1 : -1;                // 01 left, 02 right, 03 left ...
+
+        var tx  = side * (e2 * 0.40 + e3 * 0.42) * W;
+        var rot = side * (e2 * 8 + e3 * 5);
+        var sc  = (1 - ei * 0.05) * (1 - (e2 * 0.10 + e3 * 0.07));
+        var ty  = ei * 92 - e2 * 30;
+
+        movers[i].style.transform =
+          'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)' +
+          ' rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')';
+      }
+
+      if (active !== at) {
+        at = active;
+        dots.forEach(function (d, n) { d.classList.toggle('is-on', n === active); });
+      }
+    }
+
+    onScroll(drive);
+  }());
+
+  /* ---------------------------------------------------------------------
+     The client wheel, from the previous blue site. Forty-four marks set
+     around one very large circle whose centre sits far below the stage,
+     so only a shallow arc crosses it. It turns on its own - off elapsed
+     time rather than summed frames, so a slow machine turns it at the
+     same speed - and whichever mark rides over the top comes up to full
+     colour and full size. It only runs while it is on screen.
+     --------------------------------------------------------------------- */
+  (function () {
+    var dial = document.getElementById('clDial');
+    var sec  = document.getElementById('clients');
+    var num  = document.getElementById('clNum');
+    if (!dial || !sec) return;
+
+    var N = 44, html = '';
+    for (var i = 0; i < N; i++) {
+      var src = 'assets/clients/k' + ('0' + i).slice(-2) + '.png';
+      html += '<div class="cl__slot"><div class="cl__mark">' +
+              '<img class="q" src="' + src + '" alt="" loading="lazy">' +
+              '<img class="c" src="' + src + '" alt="" loading="lazy">' +
+              '</div></div>';
+    }
+    dial.innerHTML = html;
+
+    var slots = Array.prototype.slice.call(dial.children);
+    var marks = slots.map(function (s) { return s.firstChild; });
+    var lit   = slots.map(function (s) { return s.querySelector('.c'); });
+    var seen  = slots.map(function () { return -1; });
+
+    // a logo that fails to load leaves a gap in the wheel, not a broken image
+    dial.querySelectorAll('img').forEach(function (im) {
+      im.addEventListener('error', function () { im.parentNode.parentNode.style.visibility = 'hidden'; });
+    });
+
+    var STEP = 360 / N, t0 = 0, best = -1, on = false, raf = 0;
+
+    function draw(now) {
+      raf = 0;
+      if (!t0) t0 = now;
+      var spin = CALM.matches ? 0 : (now - t0) * 0.0075;   // ~7.5 deg a second
+      var near = 0, nearA = 1e9;
+
+      for (var i = 0; i < N; i++) {
+        var a = i * STEP - spin;
+        a = ((a + 180) % 360 + 360) % 360 - 180;           // signed angle from the top
+        slots[i].style.transform = 'rotate(' + a.toFixed(2) + 'deg)';
+
+        var q = Math.round(Math.max(0, 1 - Math.abs(a) / 9) * 40);
+        if (q !== seen[i]) { seen[i] = q; lit[i].style.opacity = (q / 40).toFixed(3); }
+
+        // it leans about half the arc angle - enough to belong to the wheel,
+        // not so much that the name stops being readable
+        marks[i].style.transform = 'rotate(' + (-a * 0.55).toFixed(2) + 'deg) scale(' +
+          (1 + q / 40 * 0.55).toFixed(3) + ')';
+        if (Math.abs(a) < nearA) { nearA = Math.abs(a); near = i; }
+      }
+
+      if (near !== best) {
+        best = near;
+        if (num) num.textContent = ('0' + (near + 1)).slice(-2);
+      }
+      if (on && !CALM.matches) raf = requestAnimationFrame(draw);
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        on = entries[0].isIntersecting;
+        if (on && !raf) raf = requestAnimationFrame(draw);
+      }, { rootMargin: '120px 0px' }).observe(sec);
+    } else {
+      on = true;
+    }
+    raf = requestAnimationFrame(draw);     // lay the wheel out once, before it is ever seen
   }());
 
   /* ---------------------------------------------------------------------
