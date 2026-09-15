@@ -1,0 +1,12 @@
+{
+  "name": "blue-advertising-agency",
+  "private": true,
+  "description": "blue advertising agency website",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
